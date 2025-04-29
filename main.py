@@ -1,32 +1,21 @@
 #IMPORTS
-import math
 import random
 
-#INDIVIDUAL
 from individual import Individual
 
-#CONSTANTS
 from config import POPULATION_SIZE, CHROMOSOME_LEN, MUTATION_CHANCE, CROSSOVER_CHANCE
+
+from functions.testFitness import testFitness
+from functions.selectPossibleParents import selectPossibleParents
+from functions.crossover import crossover
+from functions.mutate import mutate
 
 #GLOBAL VARIABLES
 POPULATION: list[Individual] = [];
 FITNESSES: list[float] = [];
 GENERATION: int = 0;
-
-#COMMON FUNCTIONS
-from functions.testFitness import testFitness
- 
-from functions.selectPossibleParents import selectPossibleParents
-    
-"""
-Asi se implementa una ruleta 'prolija' con lenguaje base en python, no lo uso porque me parece sintacticamente mas jodido de leer y entender
-
-probs = [f / total_fitness for f in fitnesses]
-return random.choices(population, weights=probs, k=2)
-"""
-
-from functions.crossover import crossover
-from functions.mutate import mutate
+MAX_FITNESS: float = 0.0
+MIN_FITNESS: float = 1.0
 
 #estrategia de mutacion: complemento del gen (0 a 1 y 1 a 0)
 #Creo que aca se podría agregar un parametro 'strategy' y un parametro 'geneAmount' para hacerlo mas general (estrategias de mutacion y cantidad de genes a mutar)
@@ -61,7 +50,8 @@ while(max(FITNESSES) < 0.95):
     if(len(nextGeneration) < POPULATION_SIZE):
         missingIndividuals: int = POPULATION_SIZE - len(nextGeneration);
 
-
+        # Está mal hecho porque Elitismo pasa sin hacer Ruleta a una parte de la población con mayor fitness
+        # En este caso, si no cae en posibilidad de crossover, pasan directamente como hijos a la nueva generación
 
         for i in range(missingIndividuals):
                 maxFitness: float = max(FITNESSES);
