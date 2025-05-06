@@ -2,8 +2,8 @@
 
 ## Integrantes del grupo
 
--   Juan Pedro Casañas (Legajo: #####)
--   Sofia Ochoa (Legajo: #####)
+-   Juan Pedro Casañas (Legajo: 50373)
+-   Sofia Ochoa (Legajo: 50452)
 -   Mateo Regodesebes (Legajo: 51079)
 -   Martin Quagliardi (Legajo: 51657)
 

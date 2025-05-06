@@ -16,6 +16,7 @@ FITNESSES: list[float] = [];
 GENERATION: int = 0;
 MAX_FITNESS: float = 0.0
 MIN_FITNESS: float = 1.0
+STOP_CONDITION: float = 0.95 # El fitness mínimo que tiene que alcanzar algun cromosoma de las generaciones para que se pare con el proceso
 
 #estrategia de mutacion: complemento del gen (0 a 1 y 1 a 0)
 #Creo que aca se podría agregar un parametro 'strategy' y un parametro 'geneAmount' para hacerlo mas general (estrategias de mutacion y cantidad de genes a mutar)
@@ -28,12 +29,13 @@ for _ in range(POPULATION_SIZE):
     newChromosome: int = random.randint(0, 2**CHROMOSOME_LEN - 1) #genero un numero binario que como maximo sea 2 elevado a el largo del cromosoma - 1 (Ej si es un cromosoma de 3, el maximo numero representable es 2^2 + 2^1 + 2^0 = 2^3 - 1)
     POPULATION.append(Individual(newChromosome));
 
+#? Una alternativa más limpia podría ser un map con testFitness
 for individual in POPULATION:
     fitnessResult:float = testFitness(individual);
     FITNESSES.append(fitnessResult); 
 
 #LOOP PRINCIPAL
-while(max(FITNESSES) < 0.95):
+while(max(FITNESSES) < STOP_CONDITION):
     #SELECT POSSIBLE PARENTS
     possibleParents: list[Individual] = selectPossibleParents(POPULATION, FITNESSES);
 
