@@ -2,7 +2,7 @@ import random
 
 from config import *
 from individual import Individual
-from functions import testFitness
+from .testFitness import testFitness
 
 
 def mutate(individual: Individual) -> Individual:

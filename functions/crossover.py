@@ -2,7 +2,7 @@ import random
 
 from config import *
 from individual import Individual
-from functions import testFitness
+from .testFitness import testFitness
 
 
 def crossover( parents: list[Individual] ) -> list[Individual]:
@@ -13,8 +13,8 @@ def crossover( parents: list[Individual] ) -> list[Individual]:
     #todo esto es manipulacion de bits, en un comentario es dificil de explicar
     bitMask: int = ( 1 << crossoverPoint ) - 1;
 
-    chrm1: int = ((parents[0].chromosome & bitMask) | (parents[1] & ~bitMask));
-    chrm2: int = ((parents[1].chromosome & bitMask) | (parents[0] & ~bitMask));
+    chrm1: int = ((parents[0].chromosome & bitMask) | (parents[1].chromosome & ~bitMask));
+    chrm2: int = ((parents[1].chromosome & bitMask) | (parents[0].chromosome & ~bitMask));
 
     ftn1: float = testFitness(chrm1)
     ftn2: float = testFitness(chrm2)

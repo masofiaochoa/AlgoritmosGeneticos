@@ -13,7 +13,6 @@ from functions.printCurrentGen import printCurrentGen
 
 #GLOBAL VARIABLES
 POPULATION: list[Individual] = [];
-FITNESSES: list[float] = [];
 GENERATION: int = 0;
 
 MAX_FITNESS: float = 0.0
@@ -40,6 +39,8 @@ POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, rev
 
 
 #LOOP PRINCIPAL
+
+#while(GENERATION <= TARGET_GENERATION)
 while(POPULATION[0].fitness < TARGET_FITNESS):
     POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, reverse = True)
     nextGeneration: list[Individual] = [];
@@ -55,7 +56,7 @@ while(POPULATION[0].fitness < TARGET_FITNESS):
     possibleParents: list[Individual] = selectPossibleParents(SELECTION_METHOD, POPULATION);
 
    #CRUZA
-    for i in range(REMAINDER_POPULATION, 2):
+    for i in range(0, REMAINDER_POPULATION, 2):
         parents: list[Individual] = [possibleParents[i], possibleParents[i + 1]]
         children: list[Individual] = []
 

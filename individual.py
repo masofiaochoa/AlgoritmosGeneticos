@@ -5,5 +5,5 @@ class Individual:
         pass;
 
     def __str__(self) -> str:
-        return f"Chromosome: {bin(self.chromosome)} - Fitness: {self.fitness}" #Bin solamente hace que el int se imprima como binario
+        return f"Individual:\n\t\tChromosome: {bin(self.chromosome)}\n\t\tFitness: {self.fitness}" #Bin solamente hace que el int se imprima como binario
     
