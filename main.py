@@ -19,7 +19,7 @@ MAX_FITNESS: float = 0.0
 MIN_FITNESS: float = 1.0
 
 TARGET_FITNESS: float = 0.95 #Fitness objetivo del while loop
-TARGET_GENERATION: int = 30  #Generacion objetivo del while loop
+TARGET_GENERATION: int = 20  #Generacion objetivo del while loop
 
 
 #estrategia de mutacion: complemento del gen (0 a 1 y 1 a 0)
@@ -36,21 +36,18 @@ for _ in range(POPULATION_SIZE):
 
 # Ordeno el arreglo de individuos (población) de mayor a menor según fitness
 POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, reverse = True)
+#COMPARATIVOS
+if(POPULATION[0].fitness > MAX_FITNESS):
+    MAX_FITNESS = POPULATION[0].fitness
 
+if(POPULATION[POPULATION_SIZE - 1].fitness < MIN_FITNESS):
+    MIN_FITNESS = POPULATION[POPULATION_SIZE - 1].fitness
 
 #LOOP PRINCIPAL
-
-#while(GENERATION <= TARGET_GENERATION)
-while(POPULATION[0].fitness < TARGET_FITNESS):
+#while(POPULATION[0].fitness < TARGET_FITNESS):
+while(GENERATION < TARGET_GENERATION):
     POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, reverse = True)
     nextGeneration: list[Individual] = [];
-
-    #COMPARATIVOS
-    if(POPULATION[0].fitness > MAX_FITNESS):
-        MAX_FITNESS = POPULATION[0].fitness
-    
-    if(POPULATION[POPULATION_SIZE - 1].fitness < MIN_FITNESS):
-        MIN_FITNESS = POPULATION[POPULATION_SIZE - 1].fitness
  
     #SELECCIONAR POSIBLES PADRES
     possibleParents: list[Individual] = selectPossibleParents(SELECTION_METHOD, POPULATION);
@@ -85,10 +82,17 @@ while(POPULATION[0].fitness < TARGET_FITNESS):
 
     # Ordeno el arreglo de individuos (población) de mayor a menor según fitness
     POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, reverse = True)
+    
+    #COMPARATIVOS
+    if(POPULATION[0].fitness > MAX_FITNESS):
+        MAX_FITNESS = POPULATION[0].fitness
+    
+    if(POPULATION[POPULATION_SIZE - 1].fitness < MIN_FITNESS):
+        MIN_FITNESS = POPULATION[POPULATION_SIZE - 1].fitness
+
+
     printCurrentGen(GENERATION, POPULATION)
+    
 
 print(f"Maximo fitness alcanzado: { MAX_FITNESS }")
 print(f"Minimo fitness alcanzado: { MIN_FITNESS }")
-
-    
-
