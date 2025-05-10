@@ -1,18 +1,19 @@
 import math
 import random
 
+from config import *
 from individual import Individual
 from enum_method import Method
 from roulette import roulette
 
-def selectPossibleParents(method: Method, population: list[Individual], fitnesses: list[float]) -> list[Individual]:
+def selectPossibleParents(method: Method, population: list[Individual]) -> list[Individual]:
     
     selectedPossibleParents: list[Individual] = []
     
     if method == Method.ROULETTE:
-        selectedPossibleParents = roulette(population, fitnesses)
+        selectedPossibleParents = roulette(population, REMAINDER_POPULATION)
     elif method == Method.TOURNAMENT:
-        # selectedPossibleParents = tournament(population, fitness)
+        # selectedPossibleParents = tournament(population, REMAINDER_POPULATION)
         pass
 
     return selectedPossibleParents;

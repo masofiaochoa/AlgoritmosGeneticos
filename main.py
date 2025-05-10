@@ -3,84 +3,91 @@ import random
 
 from individual import Individual
 
-from config import POPULATION_SIZE, CHROMOSOME_LEN, MUTATION_CHANCE, CROSSOVER_CHANCE
+from config import *
 
 from functions.testFitness import testFitness
 from functions.selectPossibleParents import selectPossibleParents
 from functions.crossover import crossover
 from functions.mutate import mutate
+from functions.printCurrentGen import printCurrentGen
 
 #GLOBAL VARIABLES
 POPULATION: list[Individual] = [];
 FITNESSES: list[float] = [];
 GENERATION: int = 0;
+
 MAX_FITNESS: float = 0.0
 MIN_FITNESS: float = 1.0
-STOP_CONDITION: float = 0.95 # El fitness mínimo que tiene que alcanzar algun cromosoma de las generaciones para que se pare con el proceso
+
+TARGET_FITNESS: float = 0.95 #Fitness objetivo del while loop
+TARGET_GENERATION: int = 30  #Generacion objetivo del while loop
+
 
 #estrategia de mutacion: complemento del gen (0 a 1 y 1 a 0)
 #Creo que aca se podría agregar un parametro 'strategy' y un parametro 'geneAmount' para hacerlo mas general (estrategias de mutacion y cantidad de genes a mutar)
 
-from functions.printCurrentGen import printCurrentGen
+
 
 #PROGRAM
 #GENERATE INITIAL POPULATION
 for _ in range(POPULATION_SIZE):
     newChromosome: int = random.randint(0, 2**CHROMOSOME_LEN - 1) #genero un numero binario que como maximo sea 2 elevado a el largo del cromosoma - 1 (Ej si es un cromosoma de 3, el maximo numero representable es 2^2 + 2^1 + 2^0 = 2^3 - 1)
-    POPULATION.append(Individual(newChromosome));
+    newFitness: float = testFitness(newChromosome)
+    POPULATION.append(Individual(newChromosome, newFitness));
 
-#? Una alternativa más limpia podría ser un map con testFitness
-for individual in POPULATION:
-    fitnessResult:float = testFitness(individual);
-    FITNESSES.append(fitnessResult); 
+# Ordeno el arreglo de individuos (población) de mayor a menor según fitness
+POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, reverse = True)
+
 
 #LOOP PRINCIPAL
-while(max(FITNESSES) < STOP_CONDITION):
-    #SELECT POSSIBLE PARENTS
-    possibleParents: list[Individual] = selectPossibleParents(POPULATION, FITNESSES);
-
-    #CROSSOVER ROULETTE
+while(POPULATION[0].fitness < TARGET_FITNESS):
+    POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, reverse = True)
     nextGeneration: list[Individual] = [];
 
-    for i in range(POPULATION_SIZE, 2): #si bien POPULATION_SIZE coincide con el tamaño de possibleParents, quizas sea mas claro poner len(possibleParents) como limite superior
-        if(random.uniform(0.0, 1.0) <= CROSSOVER_CHANCE):
-            parents: list[Individual] = [possibleParents[i], possibleParents[i + 1]];
-            children: list[Individual] = crossover(parents);
-            nextGeneration.extend(children);
+    #COMPARATIVOS
+    if(POPULATION[0].fitness > MAX_FITNESS):
+        MAX_FITNESS = POPULATION[0].fitness
+    
+    if(POPULATION[POPULATION_SIZE - 1].fitness < MIN_FITNESS):
+        MIN_FITNESS = POPULATION[POPULATION_SIZE - 1].fitness
+ 
+    #SELECCIONAR POSIBLES PADRES
+    possibleParents: list[Individual] = selectPossibleParents(SELECTION_METHOD, POPULATION);
 
-    #Checkeo si hace falta añadir individuos extras para que la poblacion nueva mantenga el tamaño, uso elitismo en caso de haber faltantes (Elijo miembros de la poblacion anterior con el mayor fitness)
-    if(len(nextGeneration) < POPULATION_SIZE):
-        missingIndividuals: int = POPULATION_SIZE - len(nextGeneration);
+   #CRUZA
+    for i in range(REMAINDER_POPULATION, 2):
+        parents: list[Individual] = [possibleParents[i], possibleParents[i + 1]]
+        children: list[Individual] = []
 
-        # Está mal hecho porque Elitismo pasa sin hacer Ruleta a una parte de la población con mayor fitness
-        # En este caso, si no cae en posibilidad de crossover, pasan directamente como hijos a la nueva generación
+        if(random.random() <= CROSSOVER_CHANCE):
+            children = crossover(parents)
+        else:
+            children = parents
 
-        for i in range(missingIndividuals):
-                maxFitness: float = max(FITNESSES);
-                maxIndex = FITNESSES.index(maxFitness);
-                nextGeneration.append(POPULATION[maxIndex]);
-                FITNESSES[maxIndex] = 0.0 #Lo saco del arreglo para que no moleste, este metodo es destructivo y no se que tan bien está, pero entiendo que como las Fitnesses son de la generacion previa ya no me interesan
+        nextGeneration.extend(children)
 
-    #MUTATION ROULETTE
-    for i in range(POPULATION_SIZE): #si bien POPULATION_SIZE coincide con el tamaño de nextGeneration, quizas sea mas claro poner len(nextGeneration) como limite superior
-        if(random.uniform(0.0, 1.0) <= MUTATION_CHANCE):
+    #MUTACION
+    for i in range(len(nextGeneration)):
+        if(random.random() <= MUTATION_CHANCE):
             mutant: Individual = mutate(nextGeneration[i]);
             nextGeneration[i] = mutant;
-
-    #finally replace current pop with next gen
-    POPULATION = nextGeneration;
     
-    #TEST FITNESS FOR EACH INDIVIDUAL
-    newFitnesses: list[float] = [];
 
-    for individual in POPULATION:
-        fitnessResult:float = testFitness(individual);
-        newFitnesses.append(fitnessResult); 
-        
-    FITNESSES = newFitnesses;
+    #ELITISMO
+    for i in range(0, ELITISM_CHOSEN_INDIVIDUAL_AMOUNT):
+        nextGeneration.append(POPULATION[i])
+
+    #finalmente nuestra poblacion será esta nueva generación
+    POPULATION = nextGeneration;
 
     GENERATION += 1;
-    printCurrentGen(GENERATION, POPULATION, FITNESSES); #Imprimo la generacion actual y la poblacion con sus fitnesses
+
+    # Ordeno el arreglo de individuos (población) de mayor a menor según fitness
+    POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, reverse = True)
+    printCurrentGen(GENERATION, POPULATION)
+
+print(f"Maximo fitness alcanzado: { MAX_FITNESS }")
+print(f"Minimo fitness alcanzado: { MIN_FITNESS }")
 
     
 

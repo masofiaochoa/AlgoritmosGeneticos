@@ -1,5 +1,4 @@
-from individual import Individual
-def testFitness(individual: Individual) -> float:
+def testFitness(chromosome: int) -> float:
     """ Esta es la funcion fitness del ej, el tema es que si los 4 individuos toman valor 31(Valor maximo) el fitness retorna 0.25 y termina haciendo un bardo barbaro
     total: int = 0;
     for i in POPULATION:
@@ -11,4 +10,4 @@ def testFitness(individual: Individual) -> float:
         return ( individual.chromosome ** 2 ) / total;
     """
 
-    return (individual.chromosome**2 / 31 ** 2);
+    return (chromosome**2 / 31 ** 2);
