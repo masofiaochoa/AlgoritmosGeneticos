@@ -6,10 +6,12 @@ from enum_method import Method
 from roulette import roulette
 
 def selectPossibleParents(method: Method, population: list[Individual], fitnesses: list[float]) -> list[Individual]:
+    
     selectedPossibleParents: list[Individual] = []
-    if method == Method.method1:
+    
+    if method == Method.ROULETTE:
         selectedPossibleParents = roulette(population, fitnesses)
-    elif method == Method.method2:
+    elif method == Method.TOURNAMENT:
         # selectedPossibleParents = tournament(population, fitness)
         pass
 
