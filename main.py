@@ -10,6 +10,7 @@ from functions.selectPossibleParents import selectPossibleParents
 from functions.crossover import crossover
 from functions.mutate import mutate
 from functions.printCurrentGen import printCurrentGen
+from functions.targetFunction import targetFunction
 
 #GLOBAL VARIABLES
 POPULATION: list[Individual] = [];
@@ -31,8 +32,9 @@ TARGET_GENERATION: int = 20  #Generacion objetivo del while loop
 #GENERATE INITIAL POPULATION
 for _ in range(POPULATION_SIZE):
     newChromosome: int = random.randint(0, 2**CHROMOSOME_LEN - 1) #genero un numero binario que como maximo sea 2 elevado a el largo del cromosoma - 1 (Ej si es un cromosoma de 3, el maximo numero representable es 2^2 + 2^1 + 2^0 = 2^3 - 1)
-    newFitness: float = testFitness(newChromosome)
-    POPULATION.append(Individual(newChromosome, newFitness));
+    newValueTargetFunction: float = targetFunction(newChromosome)
+    POPULATION.append(Individual(newChromosome, newValueTargetFunction, None))
+# ACA HAY QUE CALCULAR EL FITNESS DE CADA UNO LUEGO DE LA POBLACION Y LA SUMA TOTAL
 
 # Ordeno el arreglo de individuos (población) de mayor a menor según fitness
 POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, reverse = True)
