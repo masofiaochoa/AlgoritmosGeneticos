@@ -1,7 +1,7 @@
 class Individual:
-    def __init__(self, chromosome: int, valueTargetFunction: float,fitness: float): #Para python los binarios son ints, no tiene tipo aparte, pero el 99% de las veces voy a trabajar con bitwise operators como si fuera un binario
+    def __init__(self, chromosome: int, targetFunctionValue: float,fitness: float): #Para python los binarios son ints, no tiene tipo aparte, pero el 99% de las veces voy a trabajar con bitwise operators como si fuera un binario
         self.chromosome = chromosome
-        self.valueTargetFunction = valueTargetFunction
+        self.targetFunctionValue = targetFunctionValue
         self.fitness = fitness
         pass;
 

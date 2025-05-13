@@ -20,8 +20,9 @@ MAX_FITNESS: float = 0.0
 MIN_FITNESS: float = 1.0
 
 TARGET_FITNESS: float = 0.95 #Fitness objetivo del while loop
-TARGET_GENERATION: int = 20  #Generacion objetivo del while loop
+TARGET_GENERATION: int = 200  #Generacion objetivo del while loop
 
+TARGET_FUNCTION_TOTAL: float = 0.0 #Total de la funcion objetivo para calcular el fitness de cada individuo 
 
 #estrategia de mutacion: complemento del gen (0 a 1 y 1 a 0)
 #Creo que aca se podría agregar un parametro 'strategy' y un parametro 'geneAmount' para hacerlo mas general (estrategias de mutacion y cantidad de genes a mutar)
@@ -32,9 +33,13 @@ TARGET_GENERATION: int = 20  #Generacion objetivo del while loop
 #GENERATE INITIAL POPULATION
 for _ in range(POPULATION_SIZE):
     newChromosome: int = random.randint(0, 2**CHROMOSOME_LEN - 1) #genero un numero binario que como maximo sea 2 elevado a el largo del cromosoma - 1 (Ej si es un cromosoma de 3, el maximo numero representable es 2^2 + 2^1 + 2^0 = 2^3 - 1)
-    newValueTargetFunction: float = targetFunction(newChromosome)
-    POPULATION.append(Individual(newChromosome, newValueTargetFunction, None))
-# ACA HAY QUE CALCULAR EL FITNESS DE CADA UNO LUEGO DE LA POBLACION Y LA SUMA TOTAL
+    newTargetFunctionValue: float = targetFunction(newChromosome)
+    TARGET_FUNCTION_TOTAL += newTargetFunctionValue #Acumulo el total de la funcion objetivo para calcular el fitness de cada individuo
+    POPULATION.append(Individual(newChromosome, newTargetFunctionValue, None))
+
+for _ in range(POPULATION_SIZE): #calculo el fitness de cada individuo
+    POPULATION[_].fitness = testFitness(POPULATION[_], TARGET_FUNCTION_TOTAL)
+
 
 # Ordeno el arreglo de individuos (población) de mayor a menor según fitness
 POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, reverse = True)
@@ -79,6 +84,18 @@ while(GENERATION < TARGET_GENERATION):
 
     #finalmente nuestra poblacion será esta nueva generación
     POPULATION = nextGeneration;
+
+    TARGET_FUNCTION_TOTAL = 0.0 
+
+
+    for _ in range(POPULATION_SIZE):
+        newTargetFunctionValue: float = targetFunction(POPULATION[_].chromosome)
+        POPULATION[_].targetFunctionValue = newTargetFunctionValue
+        TARGET_FUNCTION_TOTAL += newTargetFunctionValue
+
+    for _ in range(POPULATION_SIZE): #calculo el fitness de cada individuo
+        newFitness: float = testFitness(POPULATION[_], TARGET_FUNCTION_TOTAL)
+        POPULATION[_].fitness = newFitness
 
     GENERATION += 1;
 

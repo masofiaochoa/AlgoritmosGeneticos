@@ -2,7 +2,6 @@ import random
 
 from config import *
 from individual import Individual
-from .testFitness import testFitness
 
 
 def crossover( parents: list[Individual] ) -> list[Individual]:
@@ -16,10 +15,7 @@ def crossover( parents: list[Individual] ) -> list[Individual]:
     chrm1: int = ((parents[0].chromosome & bitMask) | (parents[1].chromosome & ~bitMask));
     chrm2: int = ((parents[1].chromosome & bitMask) | (parents[0].chromosome & ~bitMask));
 
-    ftn1: float = testFitness(chrm1)
-    ftn2: float = testFitness(chrm2)
-
-    children.append(Individual(chrm1, ftn1));
-    children.append(Individual(chrm2, ftn2));
+    children.append(Individual(chrm1, None, None));
+    children.append(Individual(chrm2, None, None));
 
     return children;
