@@ -11,6 +11,7 @@ from functions.crossover import crossover
 from functions.mutate import mutate
 from functions.printCurrentGen import printCurrentGen
 from functions.targetFunction import targetFunction
+from functions.generatePopulation import generateInitialPopulation
 
 #GLOBAL VARIABLES
 POPULATION: list[Individual] = [];
@@ -20,41 +21,39 @@ MAX_FITNESS: float = 0.0
 MIN_FITNESS: float = 1.0
 
 TARGET_FITNESS: float = 0.95 #Fitness objetivo del while loop
-TARGET_GENERATION: int = 200  #Generacion objetivo del while loop
+TARGET_GENERATION: int = 20  #Generacion objetivo del while loop
 
 TARGET_FUNCTION_TOTAL: float = 0.0 #Total de la funcion objetivo para calcular el fitness de cada individuo 
 
-#estrategia de mutacion: complemento del gen (0 a 1 y 1 a 0)
-#Creo que aca se podría agregar un parametro 'strategy' y un parametro 'geneAmount' para hacerlo mas general (estrategias de mutacion y cantidad de genes a mutar)
-
+maxTargetFunctionValue: float = 0
+minTargetFunctionValue: float = 1
 
 
 #PROGRAM
+
 #GENERATE INITIAL POPULATION
-for _ in range(POPULATION_SIZE):
-    newChromosome: int = random.randint(0, 2**CHROMOSOME_LEN - 1) #genero un numero binario que como maximo sea 2 elevado a el largo del cromosoma - 1 (Ej si es un cromosoma de 3, el maximo numero representable es 2^2 + 2^1 + 2^0 = 2^3 - 1)
-    newTargetFunctionValue: float = targetFunction(newChromosome)
-    TARGET_FUNCTION_TOTAL += newTargetFunctionValue #Acumulo el total de la funcion objetivo para calcular el fitness de cada individuo
-    POPULATION.append(Individual(newChromosome, newTargetFunctionValue, None))
+initialPopulation: list[Individual] = generateInitialPopulation()
+POPULATION.extend(initialPopulation)
 
-for _ in range(POPULATION_SIZE): #calculo el fitness de cada individuo
-    POPULATION[_].fitness = testFitness(POPULATION[_], TARGET_FUNCTION_TOTAL)
+#COMPARATIVOS: esto deberia estar en la función de generateInitialPopulation, por prolijidad
+#if(POPULATION[0].targetFunctionValue > maxTargetFunctionValue):
+maxTargetFunctionValue = POPULATION[0].targetFunctionValue
+#if(POPULATION[POPULATION_SIZE - 1].targetFunctionValue < minTargetFunctionValue):
+minTargetFunctionValue = POPULATION[POPULATION_SIZE - 1].targetFunctionValue
 
+printCurrentGen(GENERATION, POPULATION, maxTargetFunctionValue, minTargetFunctionValue) #para imprimir la población inicial
 
-# Ordeno el arreglo de individuos (población) de mayor a menor según fitness
-POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, reverse = True)
-#COMPARATIVOS
-if(POPULATION[0].fitness > MAX_FITNESS):
-    MAX_FITNESS = POPULATION[0].fitness
+maxTargetFunctionValue: float = 1
+minTargetFunctionValue: float = 0
 
-if(POPULATION[POPULATION_SIZE - 1].fitness < MIN_FITNESS):
-    MIN_FITNESS = POPULATION[POPULATION_SIZE - 1].fitness
 
 #LOOP PRINCIPAL
-#while(POPULATION[0].fitness < TARGET_FITNESS):
 while(GENERATION < TARGET_GENERATION):
     POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, reverse = True)
     nextGeneration: list[Individual] = [];
+    maxTargetFunctionValue: float = 0
+    minTargetFunctionValue: float = 0
+
  
     #SELECCIONAR POSIBLES PADRES
     possibleParents: list[Individual] = selectPossibleParents(SELECTION_METHOD, POPULATION);
@@ -103,15 +102,16 @@ while(GENERATION < TARGET_GENERATION):
     POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, reverse = True)
     
     #COMPARATIVOS
-    if(POPULATION[0].fitness > MAX_FITNESS):
-        MAX_FITNESS = POPULATION[0].fitness
+    #if(initialPopulation[0].targetFunctionValue > maxTargetFunctionValue): 
+    maxTargetFunctionValue = POPULATION[0].targetFunctionValue
+    #if(initialPopulation[POPULATION_SIZE - 1].targetFunctionValue < minTargetFunctionValue):
+    minTargetFunctionValue = POPULATION[POPULATION_SIZE - 1].targetFunctionValue
+
+    printCurrentGen(GENERATION, POPULATION, maxTargetFunctionValue, minTargetFunctionValue)
+
+    maxTargetFunctionValue: float = 0
+    minTargetFunctionValue: float = 0
     
-    if(POPULATION[POPULATION_SIZE - 1].fitness < MIN_FITNESS):
-        MIN_FITNESS = POPULATION[POPULATION_SIZE - 1].fitness
 
-
-    printCurrentGen(GENERATION, POPULATION)
-    
-
-print(f"Maximo fitness alcanzado: { MAX_FITNESS }")
-print(f"Minimo fitness alcanzado: { MIN_FITNESS }")
+#print(f"Maximo fitness alcanzado: { MAX_FITNESS }")
+#print(f"Minimo fitness alcanzado: { MIN_FITNESS }")
