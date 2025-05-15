@@ -20,14 +20,13 @@ GENERATION: int = 0;
 MAX_FITNESS: float = 0.0
 MIN_FITNESS: float = 1.0
 
-TARGET_FITNESS: float = 0.95 #Fitness objetivo del while loop
-TARGET_GENERATION: int = 20  #Generacion objetivo del while loop
+TARGET_FITNESS: float = 0.90 #Fitness objetivo del while loop
+TARGET_GENERATION: int = 200  #Generacion objetivo del while loop
 
 TARGET_FUNCTION_TOTAL: float = 0.0 #Total de la funcion objetivo para calcular el fitness de cada individuo 
 
 maxTargetFunctionValue: float = 0
 minTargetFunctionValue: float = 1
-
 
 #PROGRAM
 
@@ -41,11 +40,9 @@ maxTargetFunctionValue = POPULATION[0].targetFunctionValue
 #if(POPULATION[POPULATION_SIZE - 1].targetFunctionValue < minTargetFunctionValue):
 minTargetFunctionValue = POPULATION[POPULATION_SIZE - 1].targetFunctionValue
 
-printCurrentGen(GENERATION, POPULATION, maxTargetFunctionValue, minTargetFunctionValue) #para imprimir la población inicial
+print("Hola soy el maxtargetFunctionvalue", maxTargetFunctionValue)
 
-maxTargetFunctionValue: float = 1
-minTargetFunctionValue: float = 0
-
+printCurrentGen(GENERATION, POPULATION, maxTargetFunctionValue, minTargetFunctionValue) #Para imprimir la población inicial
 
 #LOOP PRINCIPAL
 while(GENERATION < TARGET_GENERATION):
@@ -54,11 +51,10 @@ while(GENERATION < TARGET_GENERATION):
     maxTargetFunctionValue: float = 0
     minTargetFunctionValue: float = 0
 
- 
     #SELECCIONAR POSIBLES PADRES
     possibleParents: list[Individual] = selectPossibleParents(SELECTION_METHOD, POPULATION);
 
-   #CRUZA
+    #CRUZA
     for i in range(0, REMAINDER_POPULATION, 2):
         parents: list[Individual] = [possibleParents[i], possibleParents[i + 1]]
         children: list[Individual] = []
@@ -86,15 +82,14 @@ while(GENERATION < TARGET_GENERATION):
 
     TARGET_FUNCTION_TOTAL = 0.0 
 
-
-    for _ in range(POPULATION_SIZE):
-        newTargetFunctionValue: float = targetFunction(POPULATION[_].chromosome)
-        POPULATION[_].targetFunctionValue = newTargetFunctionValue
+    for i in range(POPULATION_SIZE):
+        newTargetFunctionValue: float = targetFunction(POPULATION[i].chromosome)
+        POPULATION[i].targetFunctionValue = newTargetFunctionValue
         TARGET_FUNCTION_TOTAL += newTargetFunctionValue
 
-    for _ in range(POPULATION_SIZE): #calculo el fitness de cada individuo
-        newFitness: float = testFitness(POPULATION[_], TARGET_FUNCTION_TOTAL)
-        POPULATION[_].fitness = newFitness
+    for i in range(POPULATION_SIZE): #calculo el fitness de cada individuo
+        newFitness: float = testFitness(POPULATION[i], TARGET_FUNCTION_TOTAL)
+        POPULATION[i].fitness = newFitness
 
     GENERATION += 1;
 
