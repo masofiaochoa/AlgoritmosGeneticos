@@ -1,5 +1,6 @@
 #IMPORTS
 import random
+import statistics as st
 
 from individual import Individual
 
@@ -12,6 +13,7 @@ from functions.mutate import mutate
 from functions.printCurrentGen import printCurrentGen
 from functions.targetFunction import targetFunction
 from functions.generatePopulation import generateInitialPopulation
+from plots.plot_utils import drawGenData
 
 #GLOBAL VARIABLES
 POPULATION: list[Individual] = [];
@@ -19,6 +21,11 @@ GENERATION: int = 0;
 
 MAX_FITNESS: float = 0.0
 MIN_FITNESS: float = 1.0
+
+# Revisar la necesidad de tener un MAX_FITNESS y un MIN_FITNESS si vamos a usar una lista por las gráficas
+MAXIMUMS: list[Individual] = []
+MINIMUMS: list[Individual] = []
+AVERAGES: list[float] = []
 
 TARGET_FITNESS: float = 0.95 #Fitness objetivo del while loop
 TARGET_GENERATION: int = 20  #Generacion objetivo del while loop
@@ -34,6 +41,7 @@ minTargetFunctionValue: float = 1
 #GENERATE INITIAL POPULATION
 initialPopulation: list[Individual] = generateInitialPopulation()
 POPULATION.extend(initialPopulation)
+
 
 #COMPARATIVOS: esto deberia estar en la función de generateInitialPopulation, por prolijidad
 #if(POPULATION[0].targetFunctionValue > maxTargetFunctionValue):
@@ -54,11 +62,11 @@ while(GENERATION < TARGET_GENERATION):
     maxTargetFunctionValue: float = 0
     minTargetFunctionValue: float = 0
 
- 
+
     #SELECCIONAR POSIBLES PADRES
     possibleParents: list[Individual] = selectPossibleParents(SELECTION_METHOD, POPULATION);
 
-   #CRUZA
+    #CRUZA
     for i in range(0, REMAINDER_POPULATION, 2):
         parents: list[Individual] = [possibleParents[i], possibleParents[i + 1]]
         children: list[Individual] = []
@@ -111,7 +119,3 @@ while(GENERATION < TARGET_GENERATION):
 
     maxTargetFunctionValue: float = 0
     minTargetFunctionValue: float = 0
-    
-
-#print(f"Maximo fitness alcanzado: { MAX_FITNESS }")
-#print(f"Minimo fitness alcanzado: { MIN_FITNESS }")
