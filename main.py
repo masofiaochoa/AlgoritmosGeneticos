@@ -45,10 +45,13 @@ POPULATION.extend(initialPopulation)
 #COMPARATIVOS: esto deberia estar en la función de generateInitialPopulation, por prolijidad
 #if(POPULATION[0].targetFunctionValue > maxTargetFunctionValue):
 maxTargetFunctionValue = POPULATION[0].targetFunctionValue
+MAXIMUMS.append(POPULATION[0])
+
 #if(POPULATION[POPULATION_SIZE - 1].targetFunctionValue < minTargetFunctionValue):
 minTargetFunctionValue = POPULATION[POPULATION_SIZE - 1].targetFunctionValue
+MINIMUMS.append(POPULATION[POPULATION_SIZE - 1])
 
-print("Hola soy el maxtargetFunctionvalue", maxTargetFunctionValue)
+AVERAGES.append(st.mean([ind.targetFunctionValue for ind in POPULATION]))
 
 printCurrentGen(GENERATION, POPULATION, maxTargetFunctionValue, minTargetFunctionValue) #Para imprimir la población inicial
 
@@ -107,10 +110,17 @@ while(GENERATION < TARGET_GENERATION):
     #COMPARATIVOS
     #if(initialPopulation[0].targetFunctionValue > maxTargetFunctionValue): 
     maxTargetFunctionValue = POPULATION[0].targetFunctionValue
+    MAXIMUMS.append(POPULATION[0])
+
     #if(initialPopulation[POPULATION_SIZE - 1].targetFunctionValue < minTargetFunctionValue):
     minTargetFunctionValue = POPULATION[POPULATION_SIZE - 1].targetFunctionValue
+    MINIMUMS.append(POPULATION[POPULATION_SIZE - 1])
+
+    AVERAGES.append(st.mean([ind.targetFunctionValue for ind in POPULATION]))
 
     printCurrentGen(GENERATION, POPULATION, maxTargetFunctionValue, minTargetFunctionValue)
 
     maxTargetFunctionValue: float = 0
     minTargetFunctionValue: float = 0
+
+drawGenData(MAXIMUMS, MINIMUMS, AVERAGES)

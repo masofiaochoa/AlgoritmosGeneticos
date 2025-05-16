@@ -6,8 +6,8 @@ def drawGenData(maximums: list[Individual], minimums: list[Individual], averages
     """
     Draws all the necessary data for each generation. Including the maximum, minimum, and average values.
     """
-    maxList: list[int] = list(map(lambda x: x.fitness, maximums))
-    minList: list[int] = list(map(lambda x: x.fitness, minimums))
+    maxList: list[float] = [x.targetFunctionValue for x in maximums]
+    minList: list[float] = [x.targetFunctionValue for x in minimums]
 
     plt.plot(maxList, label="Maximo")
     plt.plot(minList, label="Minimo")
