@@ -17,15 +17,8 @@ def accumulateProportions(proportions: list[float]) -> list[float]:
 def roulette(population: list[Individual]) -> list[Individual]:
     selectedPossibleParents: list[Individual] = []; #Contendra los individuos elegidos para posibilidad de cruza
 
-
-    totalFitness: float = sum(individual.fitness for individual in population); #suma los fitnesses de todos los individuos de la población
-
     # Construyo la ruleta
-    proportions: list[float] = []
-
-    for individual in population:
-      ratio: float = individual.fitness / totalFitness #calcula la chance de que cada individuo salga en la ruleta
-      proportions.append(ratio)
+    proportions: list[float] = [x.fitness for x in population]
 
     cumulativeProportions: list[float] = accumulateProportions(proportions) # Se acumulan las proporciones de modo de delimitar el espacio del 0 al 1 para cada uno de los cromosomas.
 

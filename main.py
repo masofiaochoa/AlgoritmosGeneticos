@@ -35,7 +35,6 @@ TARGET_FUNCTION_TOTAL: float = 0.0 #Total de la funcion objetivo para calcular e
 maxTargetFunctionValue: float = 0
 minTargetFunctionValue: float = 1
 
-
 #PROGRAM
 
 #GENERATE INITIAL POPULATION
@@ -49,11 +48,9 @@ maxTargetFunctionValue = POPULATION[0].targetFunctionValue
 #if(POPULATION[POPULATION_SIZE - 1].targetFunctionValue < minTargetFunctionValue):
 minTargetFunctionValue = POPULATION[POPULATION_SIZE - 1].targetFunctionValue
 
-printCurrentGen(GENERATION, POPULATION, maxTargetFunctionValue, minTargetFunctionValue) #para imprimir la población inicial
+print("Hola soy el maxtargetFunctionvalue", maxTargetFunctionValue)
 
-maxTargetFunctionValue: float = 1
-minTargetFunctionValue: float = 0
-
+printCurrentGen(GENERATION, POPULATION, maxTargetFunctionValue, minTargetFunctionValue) #Para imprimir la población inicial
 
 #LOOP PRINCIPAL
 while(GENERATION < TARGET_GENERATION):
@@ -61,7 +58,6 @@ while(GENERATION < TARGET_GENERATION):
     nextGeneration: list[Individual] = [];
     maxTargetFunctionValue: float = 0
     minTargetFunctionValue: float = 0
-
 
     #SELECCIONAR POSIBLES PADRES
     possibleParents: list[Individual] = selectPossibleParents(SELECTION_METHOD, POPULATION);
@@ -94,15 +90,14 @@ while(GENERATION < TARGET_GENERATION):
 
     TARGET_FUNCTION_TOTAL = 0.0 
 
-
-    for _ in range(POPULATION_SIZE):
-        newTargetFunctionValue: float = targetFunction(POPULATION[_].chromosome)
-        POPULATION[_].targetFunctionValue = newTargetFunctionValue
+    for i in range(POPULATION_SIZE):
+        newTargetFunctionValue: float = targetFunction(POPULATION[i].chromosome)
+        POPULATION[i].targetFunctionValue = newTargetFunctionValue
         TARGET_FUNCTION_TOTAL += newTargetFunctionValue
 
-    for _ in range(POPULATION_SIZE): #calculo el fitness de cada individuo
-        newFitness: float = testFitness(POPULATION[_], TARGET_FUNCTION_TOTAL)
-        POPULATION[_].fitness = newFitness
+    for i in range(POPULATION_SIZE): #calculo el fitness de cada individuo
+        newFitness: float = testFitness(POPULATION[i], TARGET_FUNCTION_TOTAL)
+        POPULATION[i].fitness = newFitness
 
     GENERATION += 1;
 
