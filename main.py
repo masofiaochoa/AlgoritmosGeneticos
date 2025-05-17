@@ -13,7 +13,7 @@ from functions.mutate import mutate
 from functions.printCurrentGen import printCurrentGen
 from functions.targetFunction import targetFunction
 from functions.generatePopulation import generateInitialPopulation
-from plots.plot_utils import drawGenData
+from plots.plot_utils import drawGenData, generateTable
 
 #GLOBAL VARIABLES
 POPULATION: list[Individual] = [];
@@ -124,3 +124,4 @@ while(GENERATION < TARGET_GENERATION):
     minTargetFunctionValue: float = 0
 
 drawGenData(MAXIMUMS, MINIMUMS, AVERAGES)
+generateTable(MAXIMUMS, MINIMUMS, AVERAGES)
