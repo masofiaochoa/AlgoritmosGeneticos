@@ -28,7 +28,7 @@ MINIMUMS: list[Individual] = []
 AVERAGES: list[float] = []
 
 TARGET_FITNESS: float = 0.95 #Fitness objetivo del while loop
-TARGET_GENERATION: int = 20  #Generacion objetivo del while loop
+TARGET_GENERATION: int = 200  #Generacion objetivo del while loop
 
 TARGET_FUNCTION_TOTAL: float = 0.0 #Total de la funcion objetivo para calcular el fitness de cada individuo 
 
