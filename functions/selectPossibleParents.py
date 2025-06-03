@@ -1,6 +1,3 @@
-import math
-import random
-
 from config import *
 from individual import Individual
 from enum_method import Method
