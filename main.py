@@ -1,5 +1,6 @@
 #IMPORTS
 import random
+import statistics as st
 
 from individual import Individual
 
@@ -12,6 +13,7 @@ from functions.mutate import mutate
 from functions.printCurrentGen import printCurrentGen
 from functions.targetFunction import targetFunction
 from functions.generatePopulation import generateInitialPopulation
+from plots.plot_utils import drawGenData, generateTable
 
 #GLOBAL VARIABLES
 POPULATION: list[Individual] = [];
@@ -20,7 +22,12 @@ GENERATION: int = 0;
 MAX_FITNESS: float = 0.0
 MIN_FITNESS: float = 1.0
 
-TARGET_FITNESS: float = 0.90 #Fitness objetivo del while loop
+# Revisar la necesidad de tener un MAX_FITNESS y un MIN_FITNESS si vamos a usar una lista por las gráficas
+MAXIMUMS: list[Individual] = []
+MINIMUMS: list[Individual] = []
+AVERAGES: list[float] = []
+
+TARGET_FITNESS: float = 0.95 #Fitness objetivo del while loop
 TARGET_GENERATION: int = 200  #Generacion objetivo del while loop
 
 TARGET_FUNCTION_TOTAL: float = 0.0 #Total de la funcion objetivo para calcular el fitness de cada individuo 
@@ -34,13 +41,17 @@ minTargetFunctionValue: float = 1
 initialPopulation: list[Individual] = generateInitialPopulation()
 POPULATION.extend(initialPopulation)
 
+
 #COMPARATIVOS: esto deberia estar en la función de generateInitialPopulation, por prolijidad
 #if(POPULATION[0].targetFunctionValue > maxTargetFunctionValue):
 maxTargetFunctionValue = POPULATION[0].targetFunctionValue
+MAXIMUMS.append(POPULATION[0])
+
 #if(POPULATION[POPULATION_SIZE - 1].targetFunctionValue < minTargetFunctionValue):
 minTargetFunctionValue = POPULATION[POPULATION_SIZE - 1].targetFunctionValue
+MINIMUMS.append(POPULATION[POPULATION_SIZE - 1])
 
-print("Hola soy el maxtargetFunctionvalue", maxTargetFunctionValue)
+AVERAGES.append(st.mean([ind.targetFunctionValue for ind in POPULATION]))
 
 printCurrentGen(GENERATION, POPULATION, maxTargetFunctionValue, minTargetFunctionValue) #Para imprimir la población inicial
 
@@ -99,14 +110,18 @@ while(GENERATION < TARGET_GENERATION):
     #COMPARATIVOS
     #if(initialPopulation[0].targetFunctionValue > maxTargetFunctionValue): 
     maxTargetFunctionValue = POPULATION[0].targetFunctionValue
+    MAXIMUMS.append(POPULATION[0])
+
     #if(initialPopulation[POPULATION_SIZE - 1].targetFunctionValue < minTargetFunctionValue):
     minTargetFunctionValue = POPULATION[POPULATION_SIZE - 1].targetFunctionValue
+    MINIMUMS.append(POPULATION[POPULATION_SIZE - 1])
+
+    AVERAGES.append(st.mean([ind.targetFunctionValue for ind in POPULATION]))
 
     printCurrentGen(GENERATION, POPULATION, maxTargetFunctionValue, minTargetFunctionValue)
 
     maxTargetFunctionValue: float = 0
     minTargetFunctionValue: float = 0
-    
 
-#print(f"Maximo fitness alcanzado: { MAX_FITNESS }")
-#print(f"Minimo fitness alcanzado: { MIN_FITNESS }")
+drawGenData(MAXIMUMS, MINIMUMS, AVERAGES)
+generateTable(MAXIMUMS, MINIMUMS, AVERAGES)
