@@ -22,14 +22,18 @@ def drawGenData(maximums: list[Individual], minimums: list[Individual], averages
 
 def generateTable(maximums: list[Individual], minimums: list[Individual], averages: list[float]) -> None:
     
-    maxList: list[float] = [bin(x.chromosome) for x in maximums]
-    minList: list[float] = [bin(x.chromosome) for x in minimums]
+    maxList: list[str] = [bin(x.chromosome) for x in maximums]
+    minList: list[str] = [bin(x.chromosome) for x in minimums]
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(20, 0.25 * len(maxList)))
     ax.axis('tight')
     ax.axis('off')
     table_data = [["Generación", "Máximo", "Mínimo", "Promedio"]]
     for i in range(len(maxList)):
         table_data.append([str(i), str(maxList[i]), str(minList[i]), str(averages[i])])
-    ax.table(cellText=table_data, loc='center', cellLoc='center')
-    plt.show()
+    table = ax.table(cellText=table_data, loc='center', cellLoc='center', colWidths=[0.1, 0.3, 0.3, 0.3])
+    table.auto_set_font_size(False)
+    fontsize = 10
+    table.set_fontsize(fontsize)
+
+    plt.savefig("tabla.png", dpi=300, bbox_inches='tight')
