@@ -1,2 +1,3 @@
 __pycache__
-tabla.png
+output/*
+!README.md

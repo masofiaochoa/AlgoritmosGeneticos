@@ -36,4 +36,4 @@ def generateTable(maximums: list[Individual], minimums: list[Individual], averag
     fontsize = 10
     table.set_fontsize(fontsize)
 
-    plt.savefig("tabla.png", dpi=300, bbox_inches='tight')
+    plt.savefig("output/tabla.png", dpi=300, bbox_inches='tight')
