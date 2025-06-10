@@ -5,7 +5,7 @@ from individual import Individual
 from .targetFunction import targetFunction
 from .testFitness import testFitness
 
-
+#Genera la población inicial iterando una generación de cromosomas aleatorios por la cantidad de población y luego evaluando el fitness para cada uno de ellos
 def generateInitialPopulation():
     initialPopulation: list[Individual] = []
     target_function_total: float = 0.0
@@ -14,7 +14,7 @@ def generateInitialPopulation():
         newChromosome: int = random.randint(0, 2**CHROMOSOME_LEN - 1) #genero un numero binario que como maximo sea 2 elevado a el largo del cromosoma - 1 (Ej si es un cromosoma de 3, el maximo numero representable es 2^2 + 2^1 + 2^0 = 2^3 - 1)
         newTargetFunctionValue: float = targetFunction(newChromosome)
         target_function_total += newTargetFunctionValue #Acumulo el total de la funcion objetivo para calcular el fitness de cada individuo
-        initialPopulation.append(Individual(newChromosome, newTargetFunctionValue, "hola"))
+        initialPopulation.append(Individual(newChromosome, newTargetFunctionValue, 0))
 
 
     for i in range(POPULATION_SIZE): #calculo el fitness de cada individuo

@@ -3,13 +3,13 @@ import random
 from config import *
 from individual import Individual
 
-
+#Genera dos hijos a partir de dos padres cruzando sus cromosomas a partir de punto de corte aleatorio
 def crossover( parents: list[Individual] ) -> list[Individual]:
     children: list[Individual] = [];
     
-    crossoverPoint: int = random.randint(1, CHROMOSOME_LEN - 1);  #El limite inferior siendo 0 es medio raro porque te puede dar hijos identicos al padre, evaluar cambiarlo a 1
+    crossoverPoint: int = random.randint(1, CHROMOSOME_LEN - 1);
     
-    #todo esto es manipulacion de bits, en un comentario es dificil de explicar
+    #Generacion de la mascara y operaciones binarias entre los cromosomas y la mascara para generar los hijos
     bitMask: int = ( 1 << crossoverPoint ) - 1;
 
     chrm1: int = ((parents[0].chromosome & bitMask) | (parents[1].chromosome & ~bitMask));

@@ -4,6 +4,7 @@ from enum_method import Method
 from .roulette import roulette
 from .tournament import tournament
 
+#Dependiendo el metodo de selección de padres elegidos (Ruleta | torneo) define la función a utilizarse
 def selectPossibleParents(method: Method, population: list[Individual]) -> list[Individual]:
     
     selectedPossibleParents: list[Individual] = []

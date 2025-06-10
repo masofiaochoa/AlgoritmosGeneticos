@@ -1,6 +1,7 @@
 from individual import Individual
 from config import *
 
+#Formatea e imprime los datos de la generación actual de individuos.
 def printCurrentGen(GENERATION: int, POPULATION: list[Individual], maxTargetFunctionValue: float, minTargetFunctionValue: float) -> None:
     print(f"Generation: {GENERATION}");
     for i in range(0, POPULATION_SIZE):

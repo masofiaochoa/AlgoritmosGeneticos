@@ -15,14 +15,13 @@ from functions.targetFunction import targetFunction
 from functions.generatePopulation import generateInitialPopulation
 from plots.plot_utils import drawGenData, generateTable
 
-#GLOBAL VARIABLES
+#VARIABLES GLOBALES
 POPULATION: list[Individual] = [];
 GENERATION: int = 0;
 
 MAX_FITNESS: float = 0.0
 MIN_FITNESS: float = 1.0
 
-# Revisar la necesidad de tener un MAX_FITNESS y un MIN_FITNESS si vamos a usar una lista por las gráficas
 MAXIMUMS: list[Individual] = []
 MINIMUMS: list[Individual] = []
 AVERAGES: list[float] = []
@@ -32,30 +31,31 @@ TARGET_GENERATION: int = 200  #Generacion objetivo del while loop
 
 TARGET_FUNCTION_TOTAL: float = 0.0 #Total de la funcion objetivo para calcular el fitness de cada individuo 
 
+#Variable auxiliares para llevar la cuenta de maximos y minimos
 maxTargetFunctionValue: float = 0
 minTargetFunctionValue: float = 1
 
-#PROGRAM
+#PROGRAMA
 
-#GENERATE INITIAL POPULATION
+#GENERAR POBLACIÓN INICIAL Y REALIZAR CALCULOS SOBRE LA MISMA
 initialPopulation: list[Individual] = generateInitialPopulation()
 POPULATION.extend(initialPopulation)
 
 
-#COMPARATIVOS: esto deberia estar en la función de generateInitialPopulation, por prolijidad
-#if(POPULATION[0].targetFunctionValue > maxTargetFunctionValue):
+#Maximos y minimos de f. objetivo generacionales
 maxTargetFunctionValue = POPULATION[0].targetFunctionValue
 MAXIMUMS.append(POPULATION[0])
 
-#if(POPULATION[POPULATION_SIZE - 1].targetFunctionValue < minTargetFunctionValue):
 minTargetFunctionValue = POPULATION[POPULATION_SIZE - 1].targetFunctionValue
 MINIMUMS.append(POPULATION[POPULATION_SIZE - 1])
 
+#Promedio generacional
 AVERAGES.append(st.mean([ind.targetFunctionValue for ind in POPULATION]))
 
+#imprimo generacion actual
 printCurrentGen(GENERATION, POPULATION, maxTargetFunctionValue, minTargetFunctionValue) #Para imprimir la población inicial
 
-#LOOP PRINCIPAL
+#LOOP PRINCIPAL PARA LAS GENERACIONES POSTERIORES A LA INICIAL
 while(GENERATION < TARGET_GENERATION):
     POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, reverse = True)
     nextGeneration: list[Individual] = [];
@@ -93,11 +93,13 @@ while(GENERATION < TARGET_GENERATION):
 
     TARGET_FUNCTION_TOTAL = 0.0 
 
+    #Calculo de función objetivo para cada individuo
     for i in range(POPULATION_SIZE):
         newTargetFunctionValue: float = targetFunction(POPULATION[i].chromosome)
         POPULATION[i].targetFunctionValue = newTargetFunctionValue
         TARGET_FUNCTION_TOTAL += newTargetFunctionValue
 
+    #Calculo de funcion fitness para cada individuo
     for i in range(POPULATION_SIZE): #calculo el fitness de cada individuo
         newFitness: float = testFitness(POPULATION[i], TARGET_FUNCTION_TOTAL)
         POPULATION[i].fitness = newFitness
@@ -107,21 +109,22 @@ while(GENERATION < TARGET_GENERATION):
     # Ordeno el arreglo de individuos (población) de mayor a menor según fitness
     POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, reverse = True)
     
-    #COMPARATIVOS
-    #if(initialPopulation[0].targetFunctionValue > maxTargetFunctionValue): 
+    #Maximos y minimos de f. objetivo generacionales
     maxTargetFunctionValue = POPULATION[0].targetFunctionValue
     MAXIMUMS.append(POPULATION[0])
 
-    #if(initialPopulation[POPULATION_SIZE - 1].targetFunctionValue < minTargetFunctionValue):
     minTargetFunctionValue = POPULATION[POPULATION_SIZE - 1].targetFunctionValue
     MINIMUMS.append(POPULATION[POPULATION_SIZE - 1])
 
+    #Promedio generacional
     AVERAGES.append(st.mean([ind.targetFunctionValue for ind in POPULATION]))
 
+    #Muestro los datos de la generación actual
     printCurrentGen(GENERATION, POPULATION, maxTargetFunctionValue, minTargetFunctionValue)
 
     maxTargetFunctionValue: float = 0
     minTargetFunctionValue: float = 0
 
+#Luego de finalizar el programa principal, muestro las graficas y tablas correspondientes con los datos de todas las generaciones
 drawGenData(MAXIMUMS, MINIMUMS, AVERAGES)
 generateTable(MAXIMUMS, MINIMUMS, AVERAGES)

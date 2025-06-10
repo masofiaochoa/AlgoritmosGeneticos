@@ -1,3 +1,4 @@
+#Individuo, contiene cromosoma, valor de su funcion objetivo, fitness y una funcion que facilita la visualización del mismo al utilizar print(Individual)
 class Individual:
     def __init__(self, chromosome: int, targetFunctionValue: float,fitness: float): #Para python los binarios son ints, no tiene tipo aparte, pero el 99% de las veces voy a trabajar con bitwise operators como si fuera un binario
         self.chromosome = chromosome

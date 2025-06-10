@@ -3,35 +3,25 @@ import random
 from individual import Individual
 from config import *
 
+#Selecciona posibles padres a partir de realizar un torneo entre el 40% de la población en el cual gana el individuo que mayor fitness
 def tournament(population: list[Individual]) -> list[Individual]:
     
     selectedPossibleParents: list[Individual] = []
 
     while (len(selectedPossibleParents) < REMAINDER_POPULATION): # realizamos varios torneos hasta tener la cantidad necesaria
         contestants: list[Individual] = [] # contiene los participantes de un torneo
-        r = int(POPULATION_SIZE * TOURNAMENT_PERCENTAGE) # número de participantes (40%)
+        r = int(POPULATION_SIZE * TOURNAMENT_PERCENTAGE) # Tamaño de población * Porcentaje de torneo = Cant participantes (40%)
         maxFitness = 0
-        winner: Individual = Individual
-        
-        print("selecciono", r)
+        winner: Individual
 
         for _ in range(0, r): # se seleccionan los participantes aleatoriamente
-            i = random.randint(0, len(population)-1)
-            print("appendeo al numero", i)
+            i = random.randint(0, len(population) - 1)
             contestants.append(population[i])
-
-        print("tengo estos contestants: ")
-        for contestant in contestants: print(contestant.chromosome)
-        print("hago torneo")
 
         for contestant in contestants: # se realiza un torneo, el ganador es aquel con mayor fitness
             if contestant.fitness > maxFitness:
                 maxFitness = contestant.fitness
                 winner = contestant
-        print("el ganador de este torneo tiene: ", winner.chromosome, winner.fitness)
         selectedPossibleParents.append(winner) # el ganador del torneo puede reproducirse
-
-    print("terminamos con ")
-    for winner in selectedPossibleParents: print(winner.chromosome)
 
     return selectedPossibleParents

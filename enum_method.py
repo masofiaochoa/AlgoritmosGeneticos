@@ -1,8 +1,6 @@
 from enum import Enum
 
+#Contiene los posibles metodos de selección de padre a elegir. Es una clase 100% utilititaria y para mayor facilidad de modularización del código 
 class Method(Enum):
-    """
-    Enum class for different methods of chromosome selection.
-    """
     ROULETTE: int = 1
     TOURNAMENT: int  = 2

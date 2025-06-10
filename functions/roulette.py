@@ -3,7 +3,7 @@ import random
 from individual import Individual
 from config import *
 
-# Función que solo se usa en ruleta
+#Acumula las proporciones para contar con valores proporcionales para cada participante de la ruleta
 def accumulateProportions(proportions: list[float]) -> list[float]:
   cumulativeProportions: list[float] = []
 
@@ -14,6 +14,7 @@ def accumulateProportions(proportions: list[float]) -> list[float]:
 
   return cumulativeProportions
 
+#Genera una ruleta a partir de la población en la cual la probabilidad de ser elegido de cada individuo es directamente proporcional a su fitness
 def roulette(population: list[Individual]) -> list[Individual]:
     selectedPossibleParents: list[Individual] = []; #Contendra los individuos elegidos para posibilidad de cruza
 
