@@ -60,7 +60,7 @@ while(GENERATION < TARGET_GENERATION):
     POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, reverse = True)
     nextGeneration: list[Individual] = [];
     maxTargetFunctionValue: float = 0
-    minTargetFunctionValue: float = 0
+    minTargetFunctionValue: float = 1 
 
     #SELECCIONAR POSIBLES PADRES
     possibleParents: list[Individual] = selectPossibleParents(SELECTION_METHOD, POPULATION);
@@ -123,7 +123,7 @@ while(GENERATION < TARGET_GENERATION):
     printCurrentGen(GENERATION, POPULATION, maxTargetFunctionValue, minTargetFunctionValue)
 
     maxTargetFunctionValue: float = 0
-    minTargetFunctionValue: float = 0
+    minTargetFunctionValue: float = 1
 
 #Luego de finalizar el programa principal, muestro las graficas y tablas correspondientes con los datos de todas las generaciones
 drawGenData(MAXIMUMS, MINIMUMS, AVERAGES)

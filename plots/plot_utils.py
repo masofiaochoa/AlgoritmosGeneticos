@@ -21,8 +21,8 @@ def drawGenData(maximums: list[Individual], minimums: list[Individual], averages
 #Genera una hoja de calculo con todos los individuos y sus valores pertinentes (Maximo, minimo, etc)
 def generateTable(maximums: list[Individual], minimums: list[Individual], averages: list[float]) -> None:
     
-    maxList: list[str] = [bin(x.chromosome) for x in maximums]
-    minList: list[str] = [bin(x.chromosome) for x in minimums]
+    maxList: list[str] = [(x.targetFunctionValue) for x in maximums]
+    minList: list[str] = [(x.targetFunctionValue) for x in minimums]
 
     fig, ax = plt.subplots(figsize=(20, 0.25 * len(maxList)))
     ax.axis('tight')
