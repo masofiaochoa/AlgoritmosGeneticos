@@ -22,8 +22,8 @@ GENERATION: int = 0;
 MAX_FITNESS: float = 0.0
 MIN_FITNESS: float = 1.0
 
-MAXIMUMS: list[Individual] = []
-MINIMUMS: list[Individual] = []
+MAXIMUMS: list[float] = []
+MINIMUMS: list[float] = []
 AVERAGES: list[float] = []
 
 TARGET_FITNESS: float = 0.95 #Fitness objetivo del while loop
@@ -44,10 +44,11 @@ POPULATION.extend(initialPopulation)
 
 #Maximos y minimos de f. objetivo generacionales
 maxTargetFunctionValue = POPULATION[0].targetFunctionValue
-MAXIMUMS.append(POPULATION[0])
+MAXIMUMS.append(maxTargetFunctionValue)
 
-minTargetFunctionValue = POPULATION[POPULATION_SIZE - 1].targetFunctionValue
-MINIMUMS.append(POPULATION[POPULATION_SIZE - 1])
+minTargetFunctionValue = POPULATION[-1].targetFunctionValue
+MINIMUMS.append(minTargetFunctionValue)
+
 
 #Promedio generacional
 AVERAGES.append(st.mean([ind.targetFunctionValue for ind in POPULATION]))
@@ -57,10 +58,10 @@ printCurrentGen(GENERATION, POPULATION, maxTargetFunctionValue, minTargetFunctio
 
 #LOOP PRINCIPAL PARA LAS GENERACIONES POSTERIORES A LA INICIAL
 while(GENERATION < TARGET_GENERATION):
-    POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, reverse = True)
+    POPULATION = sorted(POPULATION, key = lambda individual: individual.targetFunctionValue, reverse = True)
     nextGeneration: list[Individual] = [];
     maxTargetFunctionValue: float = 0
-    minTargetFunctionValue: float = 0
+    minTargetFunctionValue: float = 1 
 
     #SELECCIONAR POSIBLES PADRES
     possibleParents: list[Individual] = selectPossibleParents(SELECTION_METHOD, POPULATION);
@@ -83,7 +84,6 @@ while(GENERATION < TARGET_GENERATION):
             mutant: Individual = mutate(nextGeneration[i]);
             nextGeneration[i] = mutant;
     
-
     #ELITISMO
     for i in range(0, ELITISM_CHOSEN_INDIVIDUAL_AMOUNT):
         nextGeneration.append(POPULATION[i])
@@ -107,23 +107,25 @@ while(GENERATION < TARGET_GENERATION):
     GENERATION += 1;
 
     # Ordeno el arreglo de individuos (población) de mayor a menor según fitness
-    POPULATION = sorted(POPULATION, key = lambda individual: individual.fitness, reverse = True)
+    POPULATION = sorted(POPULATION, key = lambda individual: individual.targetFunctionValue, reverse = True)
     
     #Maximos y minimos de f. objetivo generacionales
     maxTargetFunctionValue = POPULATION[0].targetFunctionValue
-    MAXIMUMS.append(POPULATION[0])
+    MAXIMUMS.append(maxTargetFunctionValue)
 
-    minTargetFunctionValue = POPULATION[POPULATION_SIZE - 1].targetFunctionValue
-    MINIMUMS.append(POPULATION[POPULATION_SIZE - 1])
+    minTargetFunctionValue = POPULATION[-1].targetFunctionValue
+   
+    MINIMUMS.append(minTargetFunctionValue)
 
     #Promedio generacional
     AVERAGES.append(st.mean([ind.targetFunctionValue for ind in POPULATION]))
 
     #Muestro los datos de la generación actual
+
     printCurrentGen(GENERATION, POPULATION, maxTargetFunctionValue, minTargetFunctionValue)
 
     maxTargetFunctionValue: float = 0
-    minTargetFunctionValue: float = 0
+    minTargetFunctionValue: float = 1
 
 #Luego de finalizar el programa principal, muestro las graficas y tablas correspondientes con los datos de todas las generaciones
 drawGenData(MAXIMUMS, MINIMUMS, AVERAGES)

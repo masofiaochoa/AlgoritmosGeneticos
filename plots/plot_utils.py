@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 from individual import Individual
 
 #Dibuja todos los datos necesarios de cada generacion (Maximo, minimo, promedio, etc)
-def drawGenData(maximums: list[Individual], minimums: list[Individual], averages: list[float]) -> None:
-    maxList: list[float] = [x.targetFunctionValue for x in maximums]
-    minList: list[float] = [x.targetFunctionValue for x in minimums]
+def drawGenData(maximums: list[float], minimums: list[float], averages: list[float]) -> None:
+    maxList: list[float] = maximums
+    minList: list[float] = minimums
 
     plt.plot(maxList, label="Maximo")
     plt.plot(minList, label="Minimo")
@@ -19,10 +19,10 @@ def drawGenData(maximums: list[Individual], minimums: list[Individual], averages
     plt.show()
 
 #Genera una hoja de calculo con todos los individuos y sus valores pertinentes (Maximo, minimo, etc)
-def generateTable(maximums: list[Individual], minimums: list[Individual], averages: list[float]) -> None:
+def generateTable(maximums: list[float], minimums: list[float], averages: list[float]) -> None:
     
-    maxList: list[str] = [bin(x.chromosome) for x in maximums]
-    minList: list[str] = [bin(x.chromosome) for x in minimums]
+    maxList: list[str] = maximums
+    minList: list[str] = minimums
 
     fig, ax = plt.subplots(figsize=(20, 0.25 * len(maxList)))
     ax.axis('tight')
