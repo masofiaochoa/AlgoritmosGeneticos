@@ -1,4 +1,5 @@
 #IMPORTS
+import copy
 import random
 import statistics as st
 
@@ -110,10 +111,11 @@ while(GENERATION < TARGET_GENERATION):
     
     #Maximos y minimos de f. objetivo generacionales
     maxTargetFunctionValue = POPULATION[0].targetFunctionValue
-    MAXIMUMS.append(POPULATION[0])
+    MAXIMUMS.append(copy.deepcopy(POPULATION[0]))
 
     minTargetFunctionValue = POPULATION[-1].targetFunctionValue
-    MINIMUMS.append(POPULATION[-1])
+   
+    MINIMUMS.append(copy.deepcopy(POPULATION[-1]))
 
     #Promedio generacional
     AVERAGES.append(st.mean([ind.targetFunctionValue for ind in POPULATION]))
