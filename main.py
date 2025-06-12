@@ -1,5 +1,4 @@
 #IMPORTS
-import copy
 import random
 import statistics as st
 
@@ -23,8 +22,8 @@ GENERATION: int = 0;
 MAX_FITNESS: float = 0.0
 MIN_FITNESS: float = 1.0
 
-MAXIMUMS: list[Individual] = []
-MINIMUMS: list[Individual] = []
+MAXIMUMS: list[float] = []
+MINIMUMS: list[float] = []
 AVERAGES: list[float] = []
 
 TARGET_FITNESS: float = 0.95 #Fitness objetivo del while loop
@@ -45,10 +44,11 @@ POPULATION.extend(initialPopulation)
 
 #Maximos y minimos de f. objetivo generacionales
 maxTargetFunctionValue = POPULATION[0].targetFunctionValue
-MAXIMUMS.append(POPULATION[0])
+MAXIMUMS.append(maxTargetFunctionValue)
 
 minTargetFunctionValue = POPULATION[-1].targetFunctionValue
-MINIMUMS.append(POPULATION[-1])
+MINIMUMS.append(minTargetFunctionValue)
+
 
 #Promedio generacional
 AVERAGES.append(st.mean([ind.targetFunctionValue for ind in POPULATION]))
@@ -111,11 +111,11 @@ while(GENERATION < TARGET_GENERATION):
     
     #Maximos y minimos de f. objetivo generacionales
     maxTargetFunctionValue = POPULATION[0].targetFunctionValue
-    MAXIMUMS.append(copy.deepcopy(POPULATION[0]))
+    MAXIMUMS.append(maxTargetFunctionValue)
 
     minTargetFunctionValue = POPULATION[-1].targetFunctionValue
    
-    MINIMUMS.append(copy.deepcopy(POPULATION[-1]))
+    MINIMUMS.append(minTargetFunctionValue)
 
     #Promedio generacional
     AVERAGES.append(st.mean([ind.targetFunctionValue for ind in POPULATION]))
