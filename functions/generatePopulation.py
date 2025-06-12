@@ -21,6 +21,6 @@ def generateInitialPopulation():
         initialPopulation[i].fitness = testFitness(initialPopulation[i], target_function_total)
 
     # Ordeno el arreglo de individuos (población) de mayor a menor según fitness
-    initialPopulation = sorted(initialPopulation, key = lambda individual: individual.fitness, reverse = True)
+    initialPopulation = sorted(initialPopulation, key = lambda individual: individual.targetFunctionValue, reverse = True)
     
     return initialPopulation
