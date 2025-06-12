@@ -20,7 +20,7 @@ def generateInitialPopulation():
     for i in range(POPULATION_SIZE): #calculo el fitness de cada individuo
         initialPopulation[i].fitness = testFitness(initialPopulation[i], target_function_total)
 
-    # Ordeno el arreglo de individuos (población) de mayor a menor según fitness
+    # Ordeno el arreglo de individuos (población) de mayor a menor según función objetivo
     initialPopulation = sorted(initialPopulation, key = lambda individual: individual.targetFunctionValue, reverse = True)
     
     return initialPopulation

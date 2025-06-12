@@ -106,7 +106,7 @@ while(GENERATION < TARGET_GENERATION):
 
     GENERATION += 1;
 
-    # Ordeno el arreglo de individuos (población) de mayor a menor según fitness
+    # Ordeno el arreglo de individuos (población) de mayor a menor según función objetivo
     POPULATION = sorted(POPULATION, key = lambda individual: individual.targetFunctionValue, reverse = True)
     
     #Maximos y minimos de f. objetivo generacionales
