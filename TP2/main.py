@@ -32,7 +32,7 @@ for i in range(1, 2**OBJECT_ROOSTER_SIZE): #Loop que corre n veces donde n es la
     BACKPACKS.append(backpack)
 
 
-BACKPACKS = sorted(BACKPACKS, key = lambda backpack: backpack.value, reverse = False)
+BACKPACKS = sorted(BACKPACKS, key = lambda backpack: backpack.value, reverse = True)
 
 for i in range (0, len(BACKPACKS)):
     print(BACKPACKS[i])
