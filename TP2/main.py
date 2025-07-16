@@ -1,7 +1,7 @@
 from model.Backpack import Backpack
 from model.Object import Object
 
-BACKPACK_BASE_VOLUME: int = 4200
+BACKPACK_MAX_VOLUME: int = 4200
 
 OBJECT_ROOSTER: list[Object] = [
     Object(150, 20),
@@ -22,7 +22,7 @@ BACKPACKS: list[Backpack] = []
 
 
 for i in range(1, 2**OBJECT_ROOSTER_SIZE): #Loop que corre n veces donde n es la cantidad de combinaciones posibles con la cantidad de objetos del listado
-    backpack: Backpack = Backpack(BACKPACK_BASE_VOLUME)
+    backpack: Backpack = Backpack(BACKPACK_MAX_VOLUME)
 
     for j in range(OBJECT_ROOSTER_SIZE):
         if (i >> j) & 1:  # i representa en binario los objetos a cargar, ej 10010101 nos dice que se cargan los objetos con indice 10, 4, 2 y 0

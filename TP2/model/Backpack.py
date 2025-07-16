@@ -22,5 +22,3 @@ class Backpack:
         
     def __str__(self) -> str:
         return f"Mochila:\n\t\tValor:{self.value}\n\t\tVolumen restante: {self.remainderVolume}\n\t\tValor / Volumen: {self.value / (self.baseVolume - self.remainderVolume)}"
-
-        
