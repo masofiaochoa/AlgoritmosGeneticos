@@ -17,6 +17,7 @@ Este repositorio contiene los trabajos prácticos desarrollados en el marco de l
 
 ## 📁 Estructura del repositorio
 
+```bash
 algoritmos-geneticos/
 │
 ├── TP1/ # Trabajo Práctico N°1
@@ -24,3 +25,4 @@ algoritmos-geneticos/
 ├── TP2/ # Trabajo Práctico N°2: Problema de la mochila
 │ └──...
 └── README.md # Este archivo
+```
