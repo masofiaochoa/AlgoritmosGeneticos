@@ -22,3 +22,13 @@ class Backpack:
         
     def __str__(self) -> str:
         return f"Mochila:\n\t\tValor:{self.value}\n\t\tVolumen restante: {self.remainderVolume}\n\t\tValor / Volumen: {self.value / (self.baseVolume - self.remainderVolume)}"
+    
+    # Se redefine el método __eq__ para comparar mochilas basándose en su valor, volumen restante y contenidos
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Backpack):
+            return False
+        return (self.value == other.value and 
+                self.remainderVolume == other.remainderVolume and
+                len(self.contents) == len(other.contents) and
+                all(obj in other.contents for obj in self.contents))
+# Se recomienda implementar __hash__ si se implementa __eq__ pero no es estrictamente necesario

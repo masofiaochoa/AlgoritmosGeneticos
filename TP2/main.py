@@ -27,12 +27,16 @@ for i in range(1, 2**OBJECT_ROOSTER_SIZE): #Loop que corre n veces donde n es la
     for j in range(OBJECT_ROOSTER_SIZE):
         if (i >> j) & 1:  # i representa en binario los objetos a cargar, ej 10010101 nos dice que se cargan los objetos con indice 10, 4, 2 y 0
                         #Hago esto para checkear que indices estan 'encendidos' y despues cargo con dicho indice
-            backpack.addObject(OBJECT_ROOSTER[j])
+            if (backpack.addObject(OBJECT_ROOSTER[j])):
+                print(f"Agregando objeto {OBJECT_ROOSTER[j]} a la mochila {i}")
+            else:
+                print(f"No se pudo agregar objeto {OBJECT_ROOSTER[j]} a la mochila {i}")
 
-    BACKPACKS.append(backpack)
+    if backpack not in BACKPACKS:
+        BACKPACKS.append(backpack)
 
 
 BACKPACKS = sorted(BACKPACKS, key = lambda backpack: backpack.value, reverse = True)
 
 for i in range (0, len(BACKPACKS)):
-    print(BACKPACKS[i])
+    print(f'Mochila {i}: {BACKPACKS[i]}')
