@@ -9,8 +9,6 @@ Este repositorio contiene los trabajos prácticos desarrollados en el marco de l
 -   Mateo Regodesebes (Legajo: 51079)
 -   Martin Quagliardi (Legajo: 51657)
 
----
-
 ## 🧬 Sobre la materia
 
 **Algoritmos Genéticos** es una materia electiva que introduce conceptos fundamentales sobre métodos evolutivos y su aplicación a problemas de optimización. A lo largo del curso se estudian mecanismos inspirados en la evolución biológica como la selección natural, cruza (crossover), mutación y fitness, aplicados a diferentes tipos de problemas computacionales.
