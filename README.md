@@ -17,7 +17,7 @@ Este repositorio contiene los trabajos prácticos desarrollados en el marco de l
 
 ```bash
 algoritmos-geneticos/
-├───TP-INV
+├───TP-INVESTIGACION
 ├───TP1
 │ 
 └───TP2
