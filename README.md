@@ -17,10 +17,16 @@ Este repositorio contiene los trabajos prácticos desarrollados en el marco de l
 
 ```bash
 algoritmos-geneticos/
-│
-├── TP1/ # Trabajo Práctico N°1
-│ └──...
-├── TP2/ # Trabajo Práctico N°2: Problema de la mochila
-│ └──...
-└── README.md # Este archivo
+├───TP-INV
+├───TP1
+│ 
+└───TP2
+    ├───Inciso1-exhaustivo
+    │   
+    ├───Inciso2-greedy
+    │   
+    └───Inciso3-greedy-exhaustivo
+        ├───exhaustivo
+        │   
+        └───greedy
 ```
