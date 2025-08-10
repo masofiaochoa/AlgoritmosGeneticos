@@ -1,0 +1,86 @@
+-------------------------------------------
+Listado de objetos ordenados:
+
+Objeto:
+		Valor:18
+		Volumen: 60
+		Valor / Volumen: 0.3
+Objeto:
+		Valor:20
+		Volumen: 150
+		Valor / Volumen: 0.13333333333333333
+Objeto:
+		Valor:40
+		Volumen: 325
+		Valor / Volumen: 0.12307692307692308
+Objeto:
+		Valor:50
+		Volumen: 600
+		Valor / Volumen: 0.08333333333333333
+Objeto:
+		Valor:28
+		Volumen: 353
+		Valor / Volumen: 0.07932011331444759
+Objeto:
+		Valor:54
+		Volumen: 770
+		Valor / Volumen: 0.07012987012987013
+Objeto:
+		Valor:25
+		Volumen: 430
+		Valor / Volumen: 0.05813953488372093
+Objeto:
+		Valor:64
+		Volumen: 1200
+		Valor / Volumen: 0.05333333333333334
+Objeto:
+		Valor:46
+		Volumen: 930
+		Valor / Volumen: 0.04946236559139785
+Objeto:
+		Valor:36
+		Volumen: 805
+		Valor / Volumen: 0.04472049689440994
+-------------------------------------------
+Mochila armada en 0.000648 Segundos:
+
+Mochila: 
+		Combinación: 0011111111
+		Valor:299
+		Volumen ocupado: 3888
+		Valor / Volumen: 0.07690329218106996
+
+Contenidos:
+
+Objeto:
+		Valor:18
+		Volumen: 60
+		Valor / Volumen: 0.3
+Objeto:
+		Valor:20
+		Volumen: 150
+		Valor / Volumen: 0.13333333333333333
+Objeto:
+		Valor:40
+		Volumen: 325
+		Valor / Volumen: 0.12307692307692308
+Objeto:
+		Valor:50
+		Volumen: 600
+		Valor / Volumen: 0.08333333333333333
+Objeto:
+		Valor:28
+		Volumen: 353
+		Valor / Volumen: 0.07932011331444759
+Objeto:
+		Valor:54
+		Volumen: 770
+		Valor / Volumen: 0.07012987012987013
+Objeto:
+		Valor:25
+		Volumen: 430
+		Valor / Volumen: 0.05813953488372093
+Objeto:
+		Valor:64
+		Volumen: 1200
+		Valor / Volumen: 0.05333333333333334

@@ -1,6 +1,10 @@
 from model.Backpack import Backpack
 from model.Object import Object
 import time
+import sys 
+
+# Redirigir la salida estándar a un archivo
+sys.stdout = open("resultado_inciso3_greedy.txt", "w")
 
 BACKPACK_MAX_WEIGHT: int = 3000
 

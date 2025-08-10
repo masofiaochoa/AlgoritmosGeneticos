@@ -1,6 +1,10 @@
 from model.Backpack import Backpack
 from model.Object import Object
 import time
+import sys 
+
+# Redirigir la salida estándar a un archivo
+sys.stdout = open("resultado_inciso2.txt", "w")
 
 BACKPACK_MAX_VOLUME: int = 4200
 

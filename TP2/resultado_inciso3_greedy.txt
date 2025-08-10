@@ -1,0 +1,34 @@
+-------------------------------------------
+Listado de objetos ordenados:
+
+Objeto:
+		Valor:36
+		Peso: 600
+		Valor / Peso: 0.06
+Objeto:
+		Valor:60
+		Peso: 1200
+		Valor / Peso: 0.05
+Objeto:
+		Valor:72
+		Peso: 1800
+		Valor / Peso: 0.04
+-------------------------------------------
+Mochila armada en 0.00000 segundos:
+
+Mochila: 
+		Combinación: 011
+		Valor:96
+		Peso ocupado: 1800
+		Valor / peso: 0.05333333333333334
+
+Contenidos:
+
+Objeto:
+		Valor:36
+		Peso: 600
+		Valor / Peso: 0.06
+Objeto:
+		Valor:60
+		Peso: 1200
+		Valor / Peso: 0.05

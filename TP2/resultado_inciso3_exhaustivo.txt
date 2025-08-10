@@ -1,0 +1,85 @@
+-------------------------------------------
+LISTADO TOTAL DE MOCHILAS:
+
+Mochila Nro 7 NO VALIDA:
+		Combinación: 111
+		Valor:168
+		Peso ocupado: 3600
+Mochila Nro 5
+		Combinación: 101
+		Valor:132
+		Peso ocupado: 3000
+		Valor / Peso: 0.044
+Mochila Nro 3
+		Combinación: 011
+		Valor:108
+		Peso ocupado: 2400
+		Valor / Peso: 0.045
+Mochila Nro 6
+		Combinación: 110
+		Valor:96
+		Peso ocupado: 1800
+		Valor / Peso: 0.05333333333333334
+Mochila Nro 1
+		Combinación: 001
+		Valor:72
+		Peso ocupado: 1800
+		Valor / Peso: 0.04
+Mochila Nro 4
+		Combinación: 100
+		Valor:60
+		Peso ocupado: 1200
+		Valor / Peso: 0.05
+Mochila Nro 2
+		Combinación: 010
+		Valor:36
+		Peso ocupado: 600
+		Valor / Peso: 0.06
+-------------------------------------------
+MOCHILAS ELIMINADAS:
+
+Mochila Nro 7 NO VALIDA:
+		Combinación: 111
+		Valor:168
+		Peso ocupado: 3600
+-------------------------------------------
+LISTADO FINAL DE MOCHILAS:
+
+Mochila Nro 5
+		Combinación: 101
+		Valor:132
+		Peso ocupado: 3000
+		Valor / Peso: 0.044
+Mochila Nro 3
+		Combinación: 011
+		Valor:108
+		Peso ocupado: 2400
+		Valor / Peso: 0.045
+Mochila Nro 6
+		Combinación: 110
+		Valor:96
+		Peso ocupado: 1800
+		Valor / Peso: 0.05333333333333334
+Mochila Nro 1
+		Combinación: 001
+		Valor:72
+		Peso ocupado: 1800
+		Valor / Peso: 0.04
+Mochila Nro 4
+		Combinación: 100
+		Valor:60
+		Peso ocupado: 1200
+		Valor / Peso: 0.05
+Mochila Nro 2
+		Combinación: 010
+		Valor:36
+		Peso ocupado: 600
+		Valor / Peso: 0.06
+-------------------------------------------
+MEJOR SOLUCION OBTENIDA EN 0.00000 segundos:
+
+Mochila Nro 5
+		Combinación: 101
+		Valor:132
+		Peso ocupado: 3000
+		Valor / Peso: 0.044

@@ -1,6 +1,11 @@
 from model.Backpack import Backpack
 from model.Object import Object
 import time
+import sys 
+
+# Redirigir la salida estándar a un archivo
+sys.stdout = open("resultado_inciso1.txt", "w")
+
 
 BACKPACK_MAX_VOLUME: int = 4200
 
@@ -54,3 +59,7 @@ for backpack in BACKPACKS:
 
 print(f'-------------------------------------------\nMEJOR SOLUCION OBTENIDA EN {endTime - startTime:.5f} segundos:\n')
 print(BACKPACKS[0])
+print('\nContenidos:\n')
+contents: list[Object] = BACKPACKS[0].contents
+for object in contents:
+    print(object)
