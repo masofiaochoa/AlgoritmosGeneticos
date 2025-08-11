@@ -54,3 +54,7 @@ for backpack in BACKPACKS:
 
 print(f'-------------------------------------------\nMEJOR SOLUCION OBTENIDA EN {endTime-startTime:.5f} segundos:\n')
 print(BACKPACKS[0])
+print('\nContenidos:\n')
+contents: list[Object] = BACKPACKS[0].contents
+for object in contents:
+    print(object)

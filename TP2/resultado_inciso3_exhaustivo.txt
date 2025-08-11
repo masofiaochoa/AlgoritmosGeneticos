@@ -83,3 +83,14 @@ Mochila Nro 5
 		Valor:132
 		Peso ocupado: 3000
 		Valor / Peso: 0.044
+
+Contenidos:
+
+Objeto:
+		Valor:60
+		Peso: 1200
+		Valor / Peso: 0.05
+Objeto:
+		Valor:72
+		Peso: 1800
+		Valor / Peso: 0.04
