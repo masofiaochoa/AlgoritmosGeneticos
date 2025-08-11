@@ -29,13 +29,3 @@ class Backpack:
             return f"Mochila Nro {self.combination}\n\t\tCombinación: {formatted_combination_bin}\n\t\tValor:{self.value}\n\t\tPeso ocupado: {self.currentWeight}\n\t\tValor / Peso: {self.value / self.currentWeight}"
         else:
             return f"Mochila Nro {self.combination} NO VALIDA:\n\t\tCombinación: {formatted_combination_bin}\n\t\tValor:{self.value}\n\t\tPeso ocupado: {self.currentWeight}"
-    
-    # Se redefine el método __eq__ para comparar mochilas basándose en su valor, Peso restante y contenidos
-    def __eq__(self, other) -> bool:
-        if not isinstance(other, Backpack):
-            return False
-        return (self.value == other.value and 
-                self.currentWeight == other.currentWeight and
-                len(self.contents) == len(other.contents) and
-                all(obj in other.contents for obj in self.contents))
-# Se recomienda implementar __hash__ si se implementa __eq__ pero no es estrictamente necesario
