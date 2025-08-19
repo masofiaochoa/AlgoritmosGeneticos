@@ -4,22 +4,27 @@ from trainingData import * #archivo donde entrené el modelo
 import numpy as np
 from sklearn.linear_model import Ridge  
 
-#pickle -> serializar el modelo (convertilo a un archivo)
-#para ver y reusar el modelo de ML
-pickle.dump(ridge_model, open('model.pkl','wb')) #serializar -> de modelo a archivo
+class Model:
+    def __init__(self):
+        #pickle -> serializar el modelo (convertilo a un archivo)
+        #para ver y reusar el modelo de ML
+        pickle.dump(ridge_model, open('model.pkl','wb')) #serializar -> de modelo a archivo
 
-# cargar el modelo previamente entrenado
-ridge_model = pickle.load(open('model.pkl','rb')) #deserializar -> de archivo a modelo
+        # cargar el modelo previamente entrenado
+        self.model = pickle.load(open('model.pkl','rb')) #deserializar -> de archivo a modelo
 
-# Ingreso de datos (manuales por ahora)
-print("Ingrese los valores para predecir el tiempo (en minutos):")
-vel_prom_viento = float(input("Velocidad promedio del viento (km/h): "))
-dir_prom_viento = float(input("Dirección promedio del viento (en grados): "))
-distancia_mts = float(input("Distancia (en metros): "))
+    def predict(self, vel_prom_viento: float, dir_prom_viento: float, distancia_mts: float):
+        input_data = np.array([[vel_prom_viento, dir_prom_viento, distancia_mts]])
+        return self.model.predict(input_data)
+    
+if __name__ == "__main__":
+    # Ejemplo de uso
+    ml_model = Model()
 
-# Realizar la predicción
-input_data = np.array([[vel_prom_viento, dir_prom_viento, distancia_mts]])
-predicted_time = ridge_model.predict(input_data)
-
-print(f"\nTiempo estimado aproximado: {predicted_time[0]:.2f} minutos") #lo corta en 2 decimales
-print("Tiempo estimado real:", predicted_time[0])
+    # Valores de prueba
+    vel_prom_viento = 10.0
+    dir_prom_viento = 45.0
+    distancia_mts = 25.0
+  
+    predicted_time = ml_model.predict(vel_prom_viento, dir_prom_viento, distancia_mts)
+    print(f"Tiempo estimado aproximado: {predicted_time[0]:.2f} minutos")
