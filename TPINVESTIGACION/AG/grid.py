@@ -1,30 +1,32 @@
+from typing import Tuple
+
 class Grid:
-    def __init__(self, rows: int, cols: int, cell_size: float, start: tuple[int, int], goal: tuple[int, int]):
+    def __init__(self, rows: int, cols: int, cell_size: float, start: Tuple[int, int], goal: Tuple[int, int]):
         self.rows = rows
         self.cols = cols
         self.cell_size = cell_size
         self.start = start
         self.goal = goal
 
-    def start(self) -> tuple[int, int]:
+    def get_start(self) -> Tuple[int, int]:
         return self.start
 
-    def goal(self) -> tuple[int, int]:
+    def get_goal(self) -> Tuple[int, int]:
         return self.goal
 
-    def in_bounds(self, position: tuple[int, int]) -> bool:
+    def in_bounds(self, position: Tuple[int, int]) -> bool:
         row, col = position
         return 0 <= row < self.rows and 0 <= col < self.cols
 
-    def is_obstacle(self, position: tuple[int, int]) -> bool:
+    def is_obstacle(self, position: Tuple[int, int]) -> bool:
         # Implement obstacle detection logic
         return False
 
-    def apply_current(self, position: tuple[int, int], step_idx: int) -> tuple[int, int]:
+    def apply_current(self, position: Tuple[int, int], step_idx: int) -> Tuple[int, int]:
         # Implement current application logic
         return position
 
-    def wind_at(self, position1: tuple[int, int], position2: tuple[int, int]) -> tuple[float, float]:
+    def wind_at(self, position1: Tuple[int, int], position2: Tuple[int, int]) -> Tuple[float, float]:
         # Implement wind detection logic
         return 0.0, 0.0
 

@@ -3,8 +3,8 @@
 from grid import Grid
 from typing import Tuple
 
-from neighbors import neighbors
-from stepTowards import stepTowards
+from .neighbors import neighbors
+from .stepTowards import stepTowards
 
 def greedyConnect(grid: Grid, current: Tuple[int,int], goal: Tuple[int,int], max_steps: int) -> list[Tuple[int,int]]:
     """

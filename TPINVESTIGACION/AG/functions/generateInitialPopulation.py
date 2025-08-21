@@ -10,13 +10,12 @@ from typing import Tuple, Optional
 from config import (
     POPULATION_SIZE,
     FRACTION_WITH_MANHATTAN_PATH,
-    RNG_SEED,
     GRID_ROWS,
     GRID_COLS,
     USE_DIAGONALS,
     MAX_INITIAL_DETOURS,         # ej. 2     (cantidad de “desvíos” a insertar)
     MAX_GREEDY_CONNECT_STEPS,    # ej. 4*max(GRID_ROWS, GRID_COLS)
-    USE_DIAGONALS,               # bool: si permitís 8-vecinos
+    USE_DIAGONALS,               # bool: si se mueve en diagonales
 )
 
 from individual import Individual
@@ -24,10 +23,10 @@ from grid import Grid
 from functions.targetFunction import targetFunction
 from functions.testFitness import testFitness
 
-from helpers.neighbors import neighbors
-from helpers.insertDetours import insertDetours
-from helpers.greedyConnect import greedyConnect
-from helpers.stepTowards import stepTowards
+from .helpers.neighbors import neighbors
+from .helpers.insertDetours import insertDetours
+from .helpers.greedyConnect import greedyConnect
+from .helpers.stepTowards import stepTowards
 
 # -----------------------------
 # Generadores de caminos
@@ -61,7 +60,7 @@ def _random_walk_biased(grid: Grid, start: Tuple[int,int], goal: Tuple[int,int],
     for _ in range(max_steps):
         if pos == goal:
             break
-        nbrs = neighbors(grid, pos, USE_DIAGONALS)
+        nbrs = neighbors(grid, pos)
         if not nbrs:
             break
         # 50%: paso que acerca; 50%: random
@@ -95,13 +94,13 @@ def generateInitialPopulation(grid: Grid, model) -> list[Individual]:
     - El resto con random walks sesgados + reconexión greedy si es necesario.
     - Evalúa targetFunction y fitness para cada individuo.
     """
-    random.seed(RNG_SEED)
 
     population: list[Individual] = []
-    start = grid.start()
-    goal = grid.goal()
+    start = grid.get_start()
+    goal = grid.get_goal()
     n_seeded = int(round(FRACTION_WITH_MANHATTAN_PATH * POPULATION_SIZE))
     max_steps_rw = (GRID_ROWS + GRID_COLS) * 2  # cota razonable para random walk inicial
+    target_function_total = 0
 
     for i in range(POPULATION_SIZE):
         if i < n_seeded:
@@ -123,12 +122,13 @@ def generateInitialPopulation(grid: Grid, model) -> list[Individual]:
 
         # Evaluación
         tfv = targetFunction(path, model)
-        targetFunction_total += tfv
+        target_function_total += tfv
 
         population.append(Individual(path=path, targetFunctionValue=tfv, fitness=None))
     
     for i in range(POPULATION_SIZE):  # Calcular fitness de cada individuo
         individual = population[i]
-        individual.fitness = testFitness(individual.path, model)
+        print(f"target function del individual = {individual.targetFunctionValue}\ntargetfunctionTotal: {target_function_total}\n\n")
+        individual.fitness = testFitness(individual, target_function_total)
 
     return population

@@ -8,6 +8,7 @@
 # IMPORTS
 import random
 import statistics as st
+import copy
 
 # Los imports de sys, pathlib son para poder importar la clase Model de mainML.py
 import sys
@@ -24,7 +25,6 @@ from config import (               # centralizes all tunables
     MUTATION_CHANCE,
     ELITISM_CHOSEN_INDIVIDUAL_AMOUNT,
     REMAINDER_POPULATION,
-    RNG_SEED,
 
     GRID_COLS,
     GRID_ROWS,
@@ -83,11 +83,11 @@ def initialize_population(grid: Grid, model: Model) -> None:
     POPULATION.extend(initial)
 
     # Sort descending by target function (score)
-    POPULATION.sort(key=lambda ind: ind.targetFunctionValue, reverse=True)
+    POPULATION.sort(key=lambda ind: ind.targetFunctionValue)
 
     # Bookkeeping
-    MAXIMUMS.append(POPULATION[0].targetFunctionValue)
-    MINIMUMS.append(POPULATION[-1].targetFunctionValue)
+    MAXIMUMS.append(POPULATION[-1].targetFunctionValue)
+    MINIMUMS.append(POPULATION[0].targetFunctionValue)
     AVERAGES.append(st.mean(ind.targetFunctionValue for ind in POPULATION))
 
     printCurrentGen(0, POPULATION, MAXIMUMS[-1], MINIMUMS[-1])
@@ -96,27 +96,26 @@ def evolve_generation(grid: Grid, model: Model) -> None:
     global POPULATION, GENERATION
 
     # Ensure sorted
-    POPULATION.sort(key=lambda ind: ind.targetFunctionValue, reverse=True)
+    POPULATION.sort(key=lambda ind: ind.targetFunctionValue)
 
     next_generation: list[Individual] = []
 
     # 1) Selection: choose potential parents according to configured method
-    possible_parents = selectPossibleParents(SELECTION_METHOD, POPULATION)
+    possible_parents = selectPossibleParents(POPULATION)
 
     # 2) Crossover: pairwise
     for i in range(0, REMAINDER_POPULATION, 2):
         parents = [possible_parents[i], possible_parents[i + 1]]
         if random.random() <= CROSSOVER_CHANCE:
-            children = crossover(parents, grid=grid)  # pass grid if repair/validation is needed
+            children = crossover(parents)
         else:
-            # Shallow clones to avoid aliasing
-            children = [parents[0].clone(), parents[1].clone()]
+            children = [copy.deepcopy(parents[0]), copy.deepcopy(parents[1])]
         next_generation.extend(children)
 
     # 3) Mutation
     for idx in range(len(next_generation)):
         if random.random() <= MUTATION_CHANCE:
-            next_generation[idx] = mutate(next_generation[idx], grid=grid)
+            next_generation[idx] = mutate(next_generation[idx], grid)
 
     # 4) Elitism: keep top K from previous population
     for i in range(ELITISM_CHOSEN_INDIVIDUAL_AMOUNT):
@@ -129,7 +128,7 @@ def evolve_generation(grid: Grid, model: Model) -> None:
     #    IMPORTANT: targetFunction must use the ML adapter + grid to simulate time.
     target_sum = 0.0
     for i in range(POPULATION_SIZE):
-        value = targetFunction(POPULATION[i].chromosome, grid=grid, model=model)
+        value = targetFunction(POPULATION[i].path, model=model)
         POPULATION[i].targetFunctionValue = value
         target_sum += value
 
@@ -138,10 +137,10 @@ def evolve_generation(grid: Grid, model: Model) -> None:
 
     # 7) Generation ++ and statistics
     GENERATION += 1
-    POPULATION.sort(key=lambda ind: ind.targetFunctionValue, reverse=True)
+    POPULATION.sort(key=lambda ind: ind.targetFunctionValue)
 
-    MAXIMUMS.append(POPULATION[0].targetFunctionValue)
-    MINIMUMS.append(POPULATION[-1].targetFunctionValue)
+    MAXIMUMS.append(POPULATION[-1].targetFunctionValue)
+    MINIMUMS.append(POPULATION[0].targetFunctionValue)
     AVERAGES.append(st.mean(ind.targetFunctionValue for ind in POPULATION))
 
     printCurrentGen(GENERATION, POPULATION, MAXIMUMS[-1], MINIMUMS[-1])
@@ -155,7 +154,7 @@ def main() -> None:
     initialize_population(grid, model)
 
     # Stop either by generation limit or by reaching a target score threshold
-    while GENERATION < TARGET_GENERATION and MAXIMUMS[-1] < TARGET_FITNESS:
+    while GENERATION < TARGET_GENERATION and MINIMUMS[-1] > TARGET_FITNESS:
         evolve_generation(grid, model)
 
 if __name__ == "__main__":

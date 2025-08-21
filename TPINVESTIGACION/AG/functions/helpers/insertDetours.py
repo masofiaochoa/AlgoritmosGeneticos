@@ -4,10 +4,10 @@ import random
 from typing import Tuple
 
 from grid import Grid
-from neighbors import neighbors
-from greedyConnect import greedyConnect
+from .neighbors import neighbors
+from .greedyConnect import greedyConnect
 
-def insertDetours(grid: Grid, path: list[Tuple[int,int]], goal: Tuple[int,int], diagonals: bool, max_detours: int) -> list[Tuple[int,int]]:
+def insertDetours(grid: Grid, path: list[Tuple[int,int]], goal: Tuple[int,int], max_detours: int) -> list[Tuple[int,int]]:
     """
     Inserta hasta `max_detours` desvíos cortos en segmentos existentes para diversificar.
     Desvío = 1 ó 2 nodos intermedios válidos, luego retomar hacia el segmento original o reconectar greedy.
@@ -23,7 +23,7 @@ def insertDetours(grid: Grid, path: list[Tuple[int,int]], goal: Tuple[int,int], 
         anchor_prev = p[i-1]
         anchor_next = p[i+1]
         # Probar perturbar el punto p[i] hacia un vecino de anchor_prev o p[i]
-        candidates = list(set(neighbors(grid, p[i], diagonals) + neighbors(grid, anchor_prev, diagonals)))
+        candidates = list(set(neighbors(grid, p[i]) + neighbors(grid, anchor_prev)))
         random.shuffle(candidates)
         chosen = None
         for cand in candidates:
@@ -34,7 +34,7 @@ def insertDetours(grid: Grid, path: list[Tuple[int,int]], goal: Tuple[int,int], 
             continue
         # Insertar chosen entre prev y next, y si quedó no-vecino de next, reconectar corto
         new_segment = [anchor_prev, chosen]
-        if chosen != anchor_next and anchor_next not in neighbors(grid, chosen, diagonals):
+        if chosen != anchor_next and anchor_next not in neighbors(grid, chosen):
             # reconectar chosen -> anchor_next con greedy (corto)
             recon = greedyConnect(grid, chosen, anchor_next, max_steps=6)
             if not recon or recon[-1] != anchor_next:
