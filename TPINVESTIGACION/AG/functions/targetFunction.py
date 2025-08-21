@@ -14,10 +14,10 @@ def compute_angle(a: tuple[int, int], b: tuple[int, int]) -> float:
     """
     Calcula el ángulo (en grados) entre dos celdas a -> b.
     Convención (como el viento viene de derecha a izquierda por como se cruza el río):
-      (0,0)->(0,1) => 0° (derecha)
-      (0,0)->(1,0) => 90° (abajo)
-      (0,0)->(0,-1)=> 180° (izquierda)
-      (0,0)->(-1,0)=> 270° (arriba)
+        (0,0)->(0,1) => 0° (derecha)
+        (0,0)->(1,0) => 90° (abajo)
+        (0,0)->(0,-1)=> 180° (izquierda)
+        (0,0)->(-1,0)=> 270° (arriba)
     Soporta diagonales también.
     """
     dx = b[1] - a[1]  # diferencia en columnas

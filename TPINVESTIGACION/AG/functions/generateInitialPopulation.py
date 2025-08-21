@@ -1,173 +1,134 @@
 # functions/generatePopulation.py
+# Genera población inicial usando cromosomas como rutas explícitas (lista de celdas).
+# - Parte de seeds Manhattan y random walks sesgados.
+# - Aplica pequeñas perturbaciones y reconexión greedy si hace falta.
+# - Calcula targetFunction y fitness para cada individuo.
 
 import random
-from typing import List, Tuple, Iterable
-import numpy as np
+from typing import Tuple, Optional
 
-from ..config import (
+from config import (
     POPULATION_SIZE,
+    FRACTION_WITH_MANHATTAN_PATH,
     RNG_SEED,
     GRID_ROWS,
     GRID_COLS,
-    GRID_START,
-    GRID_GOAL,
-    INITIAL_NOISE_PROB,        # p.ej. 0.08 -> 8% de celdas flip
-    FRACTION_SEEDED_WITH_PATH, # p.ej. 0.6 -> 60% individuos contienen un camino semilla
+    USE_DIAGONALS,
+    MAX_INITIAL_DETOURS,         # ej. 2     (cantidad de “desvíos” a insertar)
+    MAX_GREEDY_CONNECT_STEPS,    # ej. 4*max(GRID_ROWS, GRID_COLS)
+    USE_DIAGONALS,               # bool: si permitís 8-vecinos
 )
-from ..individual import Individual
-from ..grid import Grid
 
-# Importa las funciones de scoring que ya tenés
-from ..functions.targetFunction import targetFunction
-from ..functions.testFitness import testFitness
+from individual import Individual
+from grid import Grid
+from functions.targetFunction import targetFunction
+from functions.testFitness import testFitness
 
-# -------------------------
-# Helpers
-# -------------------------
-def _empty_matrix(rows: int, cols: int) -> List[List[int]]:
-    return [[0 for _ in range(cols)] for _ in range(rows)]
+from helpers.neighbors import neighbors
+from helpers.insertDetours import insertDetours
+from helpers.greedyConnect import greedyConnect
+from helpers.stepTowards import stepTowards
 
+# -----------------------------
+# Generadores de caminos
+# -----------------------------
 
-def _manhattan_path(start: Tuple[int, int], goal: Tuple[int, int]) -> List[Tuple[int, int]]:
+# Generador de path estilo manhattan
+def _manhattan_path(start: Tuple[int,int], goal: Tuple[int,int]) -> list[Tuple[int,int]]:
     """
-    Genera una ruta Manhattan simple (primer mueve en rows luego en cols).
-    Devuelve la lista de celdas (r,c) que forman el camino, incluyendo start y goal.
+    Camino basico. Se mueve primero en filas y luego en columnas. Genera un camino en L.
     """
     (r0, c0), (r1, c1) = start, goal
-    path = []
+    path = [(r0, c0)]
     r, c = r0, c0
-    path.append((r, c))
-    # mover en filas
     dr = 1 if r1 > r0 else -1
     while r != r1:
         r += dr
         path.append((r, c))
-    # mover en columnas
     dc = 1 if c1 > c0 else -1
     while c != c1:
         c += dc
         path.append((r, c))
     return path
 
-
-def _apply_noise_to_matrix(mat: List[List[int]], noise_prob: float, grid: Grid) -> None:
+def _random_walk_biased(grid: Grid, start: Tuple[int,int], goal: Tuple[int,int], max_steps: int) -> list[Tuple[int,int]]:
     """
-    Invierte el valor de las celdas con probabilidad noise_prob, excepto start/goal and obstacles.
-    Modifica la matriz en-place.
+    Random walk con sesgo: con alta prob. elige vecino que acerca al goal; con baja, explora.
+    Termina si llega a goal o si agota max_steps. Si no llega, el caller intentará reconectar.
     """
-
-    for r in GRID_ROWS:
-        for c in GRID_COLS:
-            if (r, c) == GRID_START or (r, c) == GRID_GOAL:
-                continue
-            # no permitir 1 en obstaculos
-            if grid.is_obstacle((r, c)):
-                mat[r][c] = 0
-                continue
-            if random.random() < noise_prob:
-                mat[r][c] = 1 - mat[r][c]  # flip
-
-
-def _force_path_into_matrix(mat: List[List[int]], path: Iterable[Tuple[int, int]]) -> None:
-    """Asegura que las celdas en `path` tengan valor 1."""
-    for (r, c) in path:
-        mat[r][c] = 1
-
-def _ensure_connectivity_by_repair(mat: List[List[int]], grid: Grid) -> None:
-    """
-    Reparador simple: si no hay camino entre start y goal, conecta componentes activando
-    las celdas de una Manhattan path (puede sobrescribir obstáculos si lo preferís).
-    Preferimos no tocar obstáculos; en ese caso la reparación usa path ignorando obstáculos
-    y activa celdas que no estén marcadas ni como obstáculos.
-    """
-    # Construir grafo simple mediante BFS sobre celdas con 1
-    start = GRID_START
-    goal = GRID_GOAL
-
-    # BFS para ver si existe camino
-    from collections import deque
-
-    rows = GRID_ROWS
-    cols = GRID_COLS
-    visited = [[False] * cols for _ in range(rows)]
-    q = deque()
-    if mat[start[0]][start[1]] == 1:
-        q.append(start)
-        visited[start[0]][start[1]] = True
-
-    found = False
-    while q:
-        r, c = q.popleft()
-        if (r, c) == goal:
-            found = True
+    path = [start]
+    pos = start
+    for _ in range(max_steps):
+        if pos == goal:
             break
-        for dr, dc in ((1,0),(-1,0),(0,1),(0,-1)):
-            nr, nc = r + dr, c + dc
-            if 0 <= nr < rows and 0 <= nc < cols and not visited[nr][nc] and mat[nr][nc] == 1:
-                visited[nr][nc] = True
-                q.append((nr, nc))
+        nbrs = neighbors(grid, pos, USE_DIAGONALS)
+        if not nbrs:
+            break
+        # 50%: paso que acerca; 50%: random
+        if random.random() < 0.5:
+            nxt = stepTowards(goal, nbrs)
+        else:
+            nxt = random.choice(nbrs)
+        if nxt == pos:
+            break
+        path.append(nxt)
+        pos = nxt
+    return path
 
-    if found:
-        return  # ya hay conectividad
+# Checkeador de camino
+def _ensure_start_goal(path: list[Tuple[int,int]], start: Tuple[int,int], goal: Tuple[int,int]) -> list[Tuple[int,int]]:
+    if not path or path[0] != start:
+        path = [start] + path
+    if path[-1] != goal:
+        path = path + [goal]
+    return path
 
-    # Si no se encontró camino, forzamos una Manhattan path (sin tocar obstáculos si es posible)
-    path = _manhattan_path(start, goal)
-    for (r,c) in path:
-        # si la celda es obstáculo, saltarla (no sobreescribir). En ese caso la reparación puede fallar,
-        # pero la estrategia alternativa puede ser habilitar la celda aún siendo obstáculo (si querés).
-        if not grid.is_obstacle((r,c)):
-            mat[r][c] = 1
-    # Nota: tras forzar la path, la conectividad debería existir (si no había obstáculos sobre la path).
 
-# -------------------------
-# Función principal
-# -------------------------
-def generateInitialPopulation(grid: Grid, model) -> List[Individual]:
+# -----------------------------
+# Población inicial (principal)
+# -----------------------------
+
+def generateInitialPopulation(grid: Grid, model) -> list[Individual]:
     """
-    Genera POPULATION_SIZE individuos. Cada cromosoma es una matriz binaria.
+    Genera POPULATION_SIZE individuos donde cada cromosoma es un PATH (lista de celdas).
+    - Un porcentaje se inicializa con path Manhattan + pequeños desvíos.
+    - El resto con random walks sesgados + reconexión greedy si es necesario.
+    - Evalúa targetFunction y fitness para cada individuo.
     """
-    population: List[Individual] = []
-    rows = GRID_ROWS
-    cols = GRID_COLS
+    random.seed(RNG_SEED)
 
-    # Cantidad de individuos que iniciamos con el camino semilla garantizado
-    n_seeded = int(round(FRACTION_SEEDED_WITH_PATH * POPULATION_SIZE))
+    population: list[Individual] = []
+    start = grid.start()
+    goal = grid.goal()
+    n_seeded = int(round(FRACTION_WITH_MANHATTAN_PATH * POPULATION_SIZE))
+    max_steps_rw = (GRID_ROWS + GRID_COLS) * 2  # cota razonable para random walk inicial
 
     for i in range(POPULATION_SIZE):
-        # 1) crear matriz vacía
-        mat = _empty_matrix(rows, cols)
-
-        # 2) si estamos en la fracción seeded, forzamos una Manhattan path base
         if i < n_seeded:
-            base_path = _manhattan_path(grid.start(), grid.goal())
-            _force_path_into_matrix(mat, base_path)
+            # Seed determinista + variación local
+            base = _manhattan_path(start, goal)
+            varied = insertDetours(grid, base, goal, MAX_INITIAL_DETOURS)
+            path = _ensure_start_goal(varied, start, goal)
+        else:
+            # Random walk con sesgo + reconexión si hace falta
+            rw = _random_walk_biased(grid, start, goal, max_steps_rw)
+            if rw[-1] != goal:
+                tail = greedyConnect(grid, rw[-1], goal, MAX_GREEDY_CONNECT_STEPS)
+                if tail and tail[-1] == goal:
+                    rw = rw + tail
+                else:
+                    # Si igual no llegó, como fallback usa Manhattan (garantiza validez)
+                    rw = _manhattan_path(start, goal)
+            path = _ensure_start_goal(rw, start, goal)
 
-        # 3) aplicar ruido (flips) para diversidad
-        _apply_noise_to_matrix(mat, INITIAL_NOISE_PROB, grid)
+        # Evaluación
+        tfv = targetFunction(path, model)
+        targetFunction_total += tfv
 
-        # 4) aseguramos que start y goal sean 1
-        sr, sc = GRID_START
-        gr, gc = GRID_GOAL
-        mat[sr][sc] = 1
-        mat[gr][gc] = 1
-
-        # 5) forzamos 0s en obstaculos
-        for r in range(rows):
-            for c in range(cols):
-                if grid.is_obstacle((r, c)):
-                    mat[r][c] = 0
-
-        # 6) reparar si no hay conectividad
-        _ensure_connectivity_by_repair(mat, grid)
-
-        # 7) calcular targetFunction y fitness (se espera que targetFunction acepte matriz)
-        #    Nota: targetFunction debe decodificar la matriz a ruta (por ejemplo construyendo
-        #    un grafo con las celdas 1 y buscando el shortest path en tiempo).
-        tfv = targetFunction(mat, grid=grid, model=model)
-        fit = testFitness(mat, tfv)
-
-        # 8) crear Individual y añadir
-        ind = Individual(chromosome=mat, targetFunctionValue=tfv, fitness=fit)
-        population.append(ind)
+        population.append(Individual(path=path, targetFunctionValue=tfv, fitness=None))
+    
+    for i in range(POPULATION_SIZE):  # Calcular fitness de cada individuo
+        individual = population[i]
+        individual.fitness = testFitness(individual.path, model)
 
     return population

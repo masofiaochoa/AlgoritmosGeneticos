@@ -9,6 +9,11 @@
 import random
 import statistics as st
 
+# Los imports de sys, pathlib son para poder importar la clase Model de mainML.py
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))
+
 from individual import Individual  # must expose: chromosome, targetFunctionValue, fitness
 from config import (               # centralizes all tunables
     POPULATION_SIZE,
@@ -29,8 +34,8 @@ from config import (               # centralizes all tunables
 )
 
 # Grid + scenario adapters (no logic here, just facades)
-from TPINVESTIGACION.AG.grid import Grid         # grid with cell_size, bounds, obstacles, currents, wind
-from ..mainML import Model
+from grid import Grid         # grid with cell_size, bounds, obstacles, currents, wind
+from mainML import Model
 
 # GA utilities (you can replace internals without touching main.py)
 from functions.generateInitialPopulation import generateInitialPopulation
@@ -56,8 +61,6 @@ AVERAGES: list[float] = []
 # ----------------------------------------------------------------------------
 
 def bootstrap() -> tuple[Grid, Model]:
-  
-    random.seed(RNG_SEED)
 
     # 1) Construir la grilla que usaremos como simplificación del entorno.
 
