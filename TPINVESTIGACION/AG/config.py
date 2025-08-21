@@ -11,8 +11,16 @@ ELITISM_CHOSEN_INDIVIDUAL_AMOUNT = 5
 REMAINDER_POPULATION = POPULATION_SIZE - ELITISM_CHOSEN_INDIVIDUAL_AMOUNT
 RNG_SEED = 42
 
-GRID_COLS = 40
-GRID_ROWS = 40
+# Para el funcionamiento del modelo de machine learning
+WIND_SPEED = 5.0
+
+GRID_COLS = 10
+GRID_ROWS = 10
 GRID_CELL_SIZE = 25.0
 GRID_START = (0, 0)
-GRID_GOAL = (39, 39)
+GRID_GOAL = (9, 9)
+
+# Configuracion de poblacion inicial
+USE_DIAGONALS = False  # Si se permiten movimientos diagonales
+MAX_INITIAL_DETOURS = 3
+MAX_GREEDY_CONNECT_STEPS = 5
