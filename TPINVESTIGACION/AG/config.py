@@ -20,7 +20,7 @@ GRID_ROWS = 10
 GRID_CELL_SIZE = 25.0
 GRID_START = (0, 0)
 GRID_GOAL = (9, 9)
-
+ANGLE = 180 # estática por ahora, habría que ver como calcularla
 # Configuracion de poblacion inicial
 USE_DIAGONALS = False  # Si se permiten movimientos diagonales
 FRACTION_WITH_MANHATTAN_PATH = 0.3
