@@ -14,7 +14,7 @@ def insertDetours(grid: Grid, path: list[Tuple[int,int]], goal: Tuple[int,int], 
     """
     if len(path) < 3 or max_detours <= 0:
         return path[:]
-    p = path[:]
+    p = path[:] #copia de la lista
     detours = 0
     attempts = 0
     while detours < max_detours and attempts < 8 and len(p) >= 3:

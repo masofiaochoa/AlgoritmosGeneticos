@@ -6,24 +6,28 @@ TARGET_FITNESS = 0.1
 
 SELECTION_METHOD = "tournament"
 CROSSOVER_CHANCE = 0.8
-MUTATION_CHANCE = 0.2
+MUTATION_CHANCE = 0.05
 TOURNAMENT_PERCENTAGE = 0.4
 
 ELITISM_CHOSEN_INDIVIDUAL_AMOUNT = 0
 REMAINDER_POPULATION = POPULATION_SIZE - ELITISM_CHOSEN_INDIVIDUAL_AMOUNT
 
 # Para el funcionamiento del modelo de machine learning
-WIND_SPEED = 5.0
+WIND_SPEED = 4.7
+WIND_ANGLE = 236.66 # 0.0 NORTE, 90.0 ESTE, 180.0 OESTE, 270
 
-GRID_COLS = 10
-GRID_ROWS = 10
-GRID_CELL_SIZE = 25.0
-GRID_START = (0, 0)
-GRID_GOAL = (9, 9)
-ANGLE = 180 # estática por ahora, habría que ver como calcularla
+GRID_COLS = 20
+GRID_ROWS = 20
+GRID_CELL_SIZE = 50 #en metros
+GRID_START = (10, 0)
+GRID_GOAL = (10, GRID_COLS - 1)
+
+
 # Configuracion de poblacion inicial
-USE_DIAGONALS = False  # Si se permiten movimientos diagonales
 FRACTION_WITH_MANHATTAN_PATH = 0.3
 
 MAX_INITIAL_DETOURS = 3
 MAX_GREEDY_CONNECT_STEPS = 5
+
+#Para calcular efectos de la corriente del rio
+DISTANCE_TRAVELED_TO_DRIFT_RATIO = 0.4 #Cada un metro avanzado se desplaza 0.5 m hacia abajo en y 

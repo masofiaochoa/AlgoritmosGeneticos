@@ -1,22 +1,17 @@
 # neighbors.py
-# Define los vecinos válidos dado una celda y revisando si se permiten diagonales.
+# Define los vecinos válidos dado una celda
 
 from typing import Tuple
-
-from config import USE_DIAGONALS
 from grid import Grid
 
-def neighbors(grid: Grid, rc: Tuple[int, int]) -> list[Tuple[int, int]]:
-    r, c = rc
-    steps4 = [(1,0), (-1,0), (0,1), (0,-1)]
-    steps8 = steps4 + [(1,1), (1,-1), (-1,1), (-1,-1)]
+def neighbors(grid: Grid, currentGridPosition: Tuple[int, int]) -> list[Tuple[int, int]]:
+    currentGridRow, currentGridColumn = currentGridPosition
+    validDirections = [(1,0), (-1,0), (0,1), (1,1), (-1, 1)] #Solo se permiten movimientos verticales, horizontales hacia la derecha o diagonales hacia la derecha
+    neighboringPositions = []
   
-    deltas = steps8 if USE_DIAGONALS else steps4
-    out = []
-  
-    for dr, dc in deltas:
-        nr, nc = r + dr, c + dc
-        nxt = (nr, nc)
-        if grid.in_bounds(nxt) and not grid.is_obstacle(nxt):
-            out.append(nxt)
-    return out
+    for directionRow, directionColum in validDirections:
+        nr, nc = currentGridRow + directionRow, currentGridColumn + directionColum
+        nextPossibleGridPosition = (nr, nc)
+        if grid.in_bounds(nextPossibleGridPosition):
+            neighboringPositions.append(nextPossibleGridPosition)
+    return neighboringPositions

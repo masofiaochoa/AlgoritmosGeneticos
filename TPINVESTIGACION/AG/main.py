@@ -46,6 +46,8 @@ from functions.testFitness import testFitness
 from functions.targetFunction import targetFunction  # must return a score (higher is better)
 from functions.printCurrentGen import printCurrentGen
 
+from functions.helpers.calculatePathLength import calculatePathLength
+
 # ----------------------------------------------------------------------------
 # GLOBAL STATE
 # ----------------------------------------------------------------------------
@@ -61,7 +63,6 @@ AVERAGES: list[float] = []
 # ----------------------------------------------------------------------------
 
 def bootstrap() -> tuple[Grid, Model]:
-
     # 1) Construir la grilla que usaremos como simplificación del entorno.
 
     grid = Grid(rows=GRID_ROWS, cols=GRID_COLS, cell_size=GRID_CELL_SIZE,
@@ -100,37 +101,39 @@ def evolve_generation(grid: Grid, model: Model) -> None:
 
     next_generation: list[Individual] = []
 
-    # 1) Selection: choose potential parents according to configured method
+    # 1) Selección de padres
     possible_parents = selectPossibleParents(POPULATION)
 
-    # 2) Crossover: pairwise
+    # 2) Crossover
     for i in range(0, REMAINDER_POPULATION, 2):
         parents = [possible_parents[i], possible_parents[i + 1]]
-        if random.random() <= CROSSOVER_CHANCE:
+        if False:#random.random() <= CROSSOVER_CHANCE:
             children = crossover(parents)
         else:
             children = [copy.deepcopy(parents[0]), copy.deepcopy(parents[1])]
         next_generation.extend(children)
 
-    # 3) Mutation
+    # 3) Mutación
     for idx in range(len(next_generation)):
         if random.random() <= MUTATION_CHANCE:
             next_generation[idx] = mutate(next_generation[idx], grid)
 
-    # 4) Elitism: keep top K from previous population
+    # 4) Elitismo
     for i in range(ELITISM_CHOSEN_INDIVIDUAL_AMOUNT):
         next_generation.append(POPULATION[i].clone())
 
-    # 5) Replace population
+    # 5) reemplazar poblacion
     POPULATION = next_generation
 
     # 6) Recompute objective score and fitness for all individuals
     #    IMPORTANT: targetFunction must use the ML adapter + grid to simulate time.
     target_sum = 0.0
     for i in range(POPULATION_SIZE):
-        value = targetFunction(POPULATION[i].path, model=model)
-        POPULATION[i].targetFunctionValue = value
-        target_sum += value
+        pathDistance = calculatePathLength(POPULATION[i].path)
+        POPULATION[i].pathDistance = pathDistance
+        tfv = targetFunction(POPULATION[i], model=model)
+        POPULATION[i].targetFunctionValue = tfv
+        target_sum += tfv
 
     for i in range(POPULATION_SIZE):
         POPULATION[i].fitness = testFitness(POPULATION[i], target_sum)
