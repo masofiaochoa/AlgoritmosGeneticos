@@ -83,13 +83,13 @@ def initialize_population(grid: Grid, model: Model) -> None:
     initial = generateInitialPopulation(grid=grid, model=model)
     POPULATION.extend(initial)
 
-    # Sort descending by target function (score)
-    POPULATION.sort(key=lambda ind: ind.targetFunctionValue)
+    # Sort por fitness ascendente
+    POPULATION.sort(key=lambda ind: ind.fitness)
 
     # Bookkeeping
-    MAXIMUMS.append(POPULATION[-1].targetFunctionValue)
-    MINIMUMS.append(POPULATION[0].targetFunctionValue)
-    AVERAGES.append(st.mean(ind.targetFunctionValue for ind in POPULATION))
+    MAXIMUMS.append(POPULATION[-1].fitness)
+    MINIMUMS.append(POPULATION[0].fitness)
+    AVERAGES.append(st.mean(ind.fitness for ind in POPULATION))
 
     printCurrentGen(0, POPULATION, MAXIMUMS[-1], MINIMUMS[-1])
 
@@ -97,7 +97,7 @@ def evolve_generation(grid: Grid, model: Model) -> None:
     global POPULATION, GENERATION
 
     # Ensure sorted
-    POPULATION.sort(key=lambda ind: ind.targetFunctionValue)
+    POPULATION.sort(key=lambda ind: ind.fitness)
 
     next_generation: list[Individual] = []
 
@@ -140,11 +140,15 @@ def evolve_generation(grid: Grid, model: Model) -> None:
 
     # 7) Generation ++ and statistics
     GENERATION += 1
-    POPULATION.sort(key=lambda ind: ind.targetFunctionValue)
+        # Sort descending by target function (score)
 
-    MAXIMUMS.append(POPULATION[-1].targetFunctionValue)
-    MINIMUMS.append(POPULATION[0].targetFunctionValue)
-    AVERAGES.append(st.mean(ind.targetFunctionValue for ind in POPULATION))
+    POPULATION.sort(key=lambda ind: ind.fitness)
+
+
+    
+    MAXIMUMS.append(POPULATION[-1].fitness)
+    MINIMUMS.append(POPULATION[0].fitness)
+    AVERAGES.append(st.mean(ind.fitness for ind in POPULATION))
 
     printCurrentGen(GENERATION, POPULATION, MAXIMUMS[-1], MINIMUMS[-1])
 
@@ -159,6 +163,8 @@ def main() -> None:
     # Stop either by generation limit or by reaching a target score threshold
     while GENERATION < TARGET_GENERATION and MINIMUMS[-1] > TARGET_FITNESS:
         evolve_generation(grid, model)
+
+
 
 if __name__ == "__main__":
     main()

@@ -27,7 +27,7 @@ if __name__ == "__main__":
     ml_model = Model()
 
     # Valores de prueba
-    vel_prom_viento = float(input("Ingrese la velocidad promedio del viento (m/s): "))
+    vel_prom_viento = float(input("Ingrese la velocidad promedio del viento (km/h): "))
     dir_prom_viento = float(input("Ingrese la dirección promedio del viento (grados): "))
     distancia_mts = int(input("Ingrese la distancia (m): "))
 

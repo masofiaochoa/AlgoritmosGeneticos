@@ -24,7 +24,7 @@ class Individual:
             f"\tDistancia del camino: {self.pathDistance}\n"
             f"\tTiempo que toma recorrer el camino (Funcion objetivo): {self.targetFunctionValue:.6f}\n"
             f"\tFitness: {self.fitness:.6f}\n"
-            f"Matriz de viaje:\n" + "\n".join([f"Fila {i:2d}: {row}" for i, row in enumerate(path_matrix)])
+            #f"Matriz de viaje:\n" + "\n".join([f"Fila {i:2d}: {row}" for i, row in enumerate(path_matrix)])
             )
     
     def addPathStep(self, nextStep: Tuple[int, int]):
@@ -43,8 +43,10 @@ class Individual:
         
         
     def drift(self):
+        return #Funcionalidad anulada pues los algoritmos usados para elegir caminos no lograron adaptarse  correctamente
+    """     
         if(self.partialDrift >= GRID_CELL_SIZE):
-            self.partialDrift -= GRID_CELL_SIZE
+            self.partialDrift = 0;
             lastPos = self.path[-1]
             drift = (1, 0)
             driftedPos = (lastPos[0] + drift[0], lastPos[1] + drift[1])
@@ -52,7 +54,10 @@ class Individual:
             
             #si la posicion derivada por la corriente no esta fuera del grid, la deriva. Sino simplemente lo deja en el fondo del grid
             if(0 <= driftedRow < GRID_ROWS and 0 <= driftedCol < GRID_COLS):
-                self.path.append(driftedPos)
+                self.path.append(driftedPos) 
+    """
+
+
                 
         
         
