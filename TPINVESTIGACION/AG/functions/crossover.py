@@ -24,8 +24,8 @@ def crossover(parents: list[Individual]) -> list[Individual]:
     new_first_path = parents[0].path[:parents[0].path.index(crossover_point)] + parents[1].path[parents[1].path.index(crossover_point):]
     new_second_path = parents[1].path[:parents[1].path.index(crossover_point)] + parents[0].path[parents[0].path.index(crossover_point):]
 
-    children.append(Individual(path=new_first_path, targetFunctionValue=None, fitness=None))
-    children.append(Individual(path=new_second_path, targetFunctionValue=None, fitness=None))
+    children.append(Individual(path=new_first_path, pathDistance=None, targetFunctionValue=None, fitness=None))
+    children.append(Individual(path=new_second_path, pathDistance=None, targetFunctionValue=None, fitness=None))
 
     # Retornar los nuevos individuos
     return children

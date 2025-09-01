@@ -46,6 +46,8 @@ from functions.testFitness import testFitness
 from functions.targetFunction import targetFunction  # must return a score (higher is better)
 from functions.printCurrentGen import printCurrentGen
 
+from functions.helpers.calculatePathLength import calculatePathLength
+
 # ----------------------------------------------------------------------------
 # GLOBAL STATE
 # ----------------------------------------------------------------------------
@@ -61,7 +63,6 @@ AVERAGES: list[float] = []
 # ----------------------------------------------------------------------------
 
 def bootstrap() -> tuple[Grid, Model]:
-
     # 1) Construir la grilla que usaremos como simplificación del entorno.
 
     grid = Grid(rows=GRID_ROWS, cols=GRID_COLS, cell_size=GRID_CELL_SIZE,
@@ -82,13 +83,13 @@ def initialize_population(grid: Grid, model: Model) -> None:
     initial = generateInitialPopulation(grid=grid, model=model)
     POPULATION.extend(initial)
 
-    # Sort descending by target function (score)
-    POPULATION.sort(key=lambda ind: ind.targetFunctionValue)
+    # Sort por fitness ascendente
+    POPULATION.sort(key=lambda ind: ind.fitness)
 
     # Bookkeeping
-    MAXIMUMS.append(POPULATION[-1].targetFunctionValue)
-    MINIMUMS.append(POPULATION[0].targetFunctionValue)
-    AVERAGES.append(st.mean(ind.targetFunctionValue for ind in POPULATION))
+    MAXIMUMS.append(POPULATION[-1].fitness)
+    MINIMUMS.append(POPULATION[0].fitness)
+    AVERAGES.append(st.mean(ind.fitness for ind in POPULATION))
 
     printCurrentGen(0, POPULATION, MAXIMUMS[-1], MINIMUMS[-1])
 
@@ -96,52 +97,58 @@ def evolve_generation(grid: Grid, model: Model) -> None:
     global POPULATION, GENERATION
 
     # Ensure sorted
-    POPULATION.sort(key=lambda ind: ind.targetFunctionValue)
+    POPULATION.sort(key=lambda ind: ind.fitness)
 
     next_generation: list[Individual] = []
 
-    # 1) Selection: choose potential parents according to configured method
+    # 1) Selección de padres
     possible_parents = selectPossibleParents(POPULATION)
 
-    # 2) Crossover: pairwise
+    # 2) Crossover
     for i in range(0, REMAINDER_POPULATION, 2):
         parents = [possible_parents[i], possible_parents[i + 1]]
-        if random.random() <= CROSSOVER_CHANCE:
+        if False:#random.random() <= CROSSOVER_CHANCE:
             children = crossover(parents)
         else:
             children = [copy.deepcopy(parents[0]), copy.deepcopy(parents[1])]
         next_generation.extend(children)
 
-    # 3) Mutation
+    # 3) Mutación
     for idx in range(len(next_generation)):
         if random.random() <= MUTATION_CHANCE:
             next_generation[idx] = mutate(next_generation[idx], grid)
 
-    # 4) Elitism: keep top K from previous population
+    # 4) Elitismo
     for i in range(ELITISM_CHOSEN_INDIVIDUAL_AMOUNT):
         next_generation.append(POPULATION[i].clone())
 
-    # 5) Replace population
+    # 5) reemplazar poblacion
     POPULATION = next_generation
 
     # 6) Recompute objective score and fitness for all individuals
     #    IMPORTANT: targetFunction must use the ML adapter + grid to simulate time.
     target_sum = 0.0
     for i in range(POPULATION_SIZE):
-        value = targetFunction(POPULATION[i].path, model=model)
-        POPULATION[i].targetFunctionValue = value
-        target_sum += value
+        pathDistance = calculatePathLength(POPULATION[i].path)
+        POPULATION[i].pathDistance = pathDistance
+        tfv = targetFunction(POPULATION[i], model=model)
+        POPULATION[i].targetFunctionValue = tfv
+        target_sum += tfv
 
     for i in range(POPULATION_SIZE):
         POPULATION[i].fitness = testFitness(POPULATION[i], target_sum)
 
     # 7) Generation ++ and statistics
     GENERATION += 1
-    POPULATION.sort(key=lambda ind: ind.targetFunctionValue)
+        # Sort descending by target function (score)
 
-    MAXIMUMS.append(POPULATION[-1].targetFunctionValue)
-    MINIMUMS.append(POPULATION[0].targetFunctionValue)
-    AVERAGES.append(st.mean(ind.targetFunctionValue for ind in POPULATION))
+    POPULATION.sort(key=lambda ind: ind.fitness)
+
+
+    
+    MAXIMUMS.append(POPULATION[-1].fitness)
+    MINIMUMS.append(POPULATION[0].fitness)
+    AVERAGES.append(st.mean(ind.fitness for ind in POPULATION))
 
     printCurrentGen(GENERATION, POPULATION, MAXIMUMS[-1], MINIMUMS[-1])
 
@@ -156,6 +163,8 @@ def main() -> None:
     # Stop either by generation limit or by reaching a target score threshold
     while GENERATION < TARGET_GENERATION and MINIMUMS[-1] > TARGET_FITNESS:
         evolve_generation(grid, model)
+
+
 
 if __name__ == "__main__":
     main()

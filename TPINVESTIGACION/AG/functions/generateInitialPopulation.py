@@ -4,6 +4,7 @@
 # - Aplica pequeñas perturbaciones y reconexión greedy si hace falta.
 # - Calcula targetFunction y fitness para cada individuo.
 
+from math import floor
 import random
 from typing import Tuple, Optional
 
@@ -12,10 +13,9 @@ from config import (
     FRACTION_WITH_MANHATTAN_PATH,
     GRID_ROWS,
     GRID_COLS,
-    USE_DIAGONALS,
+    GRID_CELL_SIZE,
     MAX_INITIAL_DETOURS,         # ej. 2     (cantidad de “desvíos” a insertar)
     MAX_GREEDY_CONNECT_STEPS,    # ej. 4*max(GRID_ROWS, GRID_COLS)
-    USE_DIAGONALS,               # bool: si se mueve en diagonales
 )
 
 from individual import Individual
@@ -24,63 +24,74 @@ from functions.targetFunction import targetFunction
 from functions.testFitness import testFitness
 
 from .helpers.neighbors import neighbors
-from .helpers.insertDetours import insertDetours
 from .helpers.greedyConnect import greedyConnect
 from .helpers.stepTowards import stepTowards
+
 
 # -----------------------------
 # Generadores de caminos
 # -----------------------------
 
 # Generador de path estilo manhattan
-def _manhattan_path(start: Tuple[int,int], goal: Tuple[int,int]) -> list[Tuple[int,int]]:
+def manhattan_path_stepwise(ind: Individual, goal: Tuple[int, int]):
     """
-    Camino basico. Se mueve primero en filas y luego en columnas. Genera un camino en L.
+    Genera un path en forma de L desde el último nodo del individuo hasta goal,
+    agregando cada paso con addPathStep() para aplicar variaciones por corriente.
     """
-    (r0, c0), (r1, c1) = start, goal
-    path = [(r0, c0)]
-    r, c = r0, c0
-    dr = 1 if r1 > r0 else -1
-    while r != r1:
-        r += dr
-        path.append((r, c))
-    dc = 1 if c1 > c0 else -1
-    while c != c1:
-        c += dc
-        path.append((r, c))
-    return path
+    current_row, current_col = ind.path[-1]
+    goal_row, goal_col = goal
 
-def _random_walk_biased(grid: Grid, start: Tuple[int,int], goal: Tuple[int,int], max_steps: int) -> list[Tuple[int,int]]:
+    # Avanzar en filas
+    row_step = 1 if goal_row > current_row else -1
+    while current_row != goal_row:
+        current_row += row_step
+        ind.addPathStep((current_row, current_col))
+
+    # Avanzar en columnas
+    col_step = 1 if goal_col > current_col else -1
+    while current_col != goal_col:
+        current_col += col_step
+        ind.addPathStep((current_row, current_col))
+
+
+
+import random
+
+def random_walk_biased_stepwise(ind: Individual, grid: Grid, goal: Tuple[int,int], max_steps: int):
     """
-    Random walk con sesgo: con alta prob. elige vecino que acerca al goal; con baja, explora.
-    Termina si llega a goal o si agota max_steps. Si no llega, el caller intentará reconectar.
+    Random walk con sesgo paso a paso:
+    - 50% elige vecino que acerque al objetivo.
+    - 50% elige vecino al azar.
+    - Cada paso se agrega con addPathStep() para aplicar variaciones por corriente
     """
-    path = [start]
-    pos = start
+    current_pos = ind.path[-1]
+
     for _ in range(max_steps):
-        if pos == goal:
+        if current_pos == goal:
             break
-        nbrs = neighbors(grid, pos)
-        if not nbrs:
-            break
-        # 50%: paso que acerca; 50%: random
-        if random.random() < 0.5:
-            nxt = stepTowards(goal, nbrs)
-        else:
-            nxt = random.choice(nbrs)
-        if nxt == pos:
-            break
-        path.append(nxt)
-        pos = nxt
-    return path
 
-# Checkeador de camino
-def _ensure_start_goal(path: list[Tuple[int,int]], start: Tuple[int,int], goal: Tuple[int,int]) -> list[Tuple[int,int]]:
-    if not path or path[0] != start:
-        path = [start] + path
-    if path[-1] != goal:
-        path = path + [goal]
-    return path
+        neighbors_list = neighbors(grid, current_pos)
+
+        if not neighbors_list:
+            break
+        
+        if current_pos[1] !=  grid.goal[1]: #Si no estamos en la ultima columna entonces no permitir movimientos repetidos
+            neighbors_list = [n for n in neighbors_list if n not in ind.path]
+            
+        # Elegir próximo paso
+        if random.random() < 0.7:
+            next_pos = stepTowards(goal, neighbors_list)
+        else:
+            next_pos = random.choice(neighbors_list)
+
+        # Evitar quedarse en el mismo lugar
+        if next_pos == current_pos:
+            break
+
+        # Agregar el paso al path y aplicar drift
+        ind.addPathStep(next_pos)
+        current_pos = next_pos
+
 
 
 # -----------------------------
@@ -103,28 +114,30 @@ def generateInitialPopulation(grid: Grid, model) -> list[Individual]:
     target_function_total = 0
 
     for i in range(POPULATION_SIZE):
-        if i < n_seeded:
-            # Seed determinista + variación local
-            base = _manhattan_path(start, goal)
-            varied = insertDetours(grid, base, goal, MAX_INITIAL_DETOURS)
-            path = _ensure_start_goal(varied, start, goal)
-        else:
-            # Random walk con sesgo + reconexión si hace falta
-            rw = _random_walk_biased(grid, start, goal, max_steps_rw)
-            if rw[-1] != goal:
-                tail = greedyConnect(grid, rw[-1], goal, MAX_GREEDY_CONNECT_STEPS)
-                if tail and tail[-1] == goal:
-                    rw = rw + tail
-                else:
-                    # Si igual no llegó, como fallback usa Manhattan (garantiza validez)
-                    rw = _manhattan_path(start, goal)
-            path = _ensure_start_goal(rw, start, goal)
+    
+        ind = Individual(path=[start], pathDistance=0, targetFunctionValue=0, fitness=None)
 
+        if i < n_seeded:
+            manhattan_path_stepwise(ind, goal)
+        else:
+            random_walk_biased_stepwise(ind, grid, goal, max_steps_rw)
+            # reconexión si no llegó
+            if ind.path[-1] != goal:
+                tail = greedyConnect(grid, ind.path[-1], goal, MAX_GREEDY_CONNECT_STEPS)
+                if tail and tail[-1] == goal:
+                    for step in tail[1:]:  # agregar cada paso al individuo
+                        ind.addPathStep(step)
+                else:
+                    manhattan_path_stepwise(ind, goal)
+        
         # Evaluación
-        tfv = targetFunction(path, model)
+        tfv = targetFunction(ind, model)
+        
+        ind.targetFunctionValue = tfv
+        
         target_function_total += tfv
 
-        population.append(Individual(path=path, targetFunctionValue=tfv, fitness=None))
+        population.append(ind)
     
     for i in range(POPULATION_SIZE):  # Calcular fitness de cada individuo
         individual = population[i]
