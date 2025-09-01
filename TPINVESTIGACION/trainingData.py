@@ -63,11 +63,11 @@ if __name__ == "__main__":
 
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.20, random_state=1, shuffle=True)
 
-    ridge_model = Ridge()
-    ridge_model.fit(X_train, Y_train) #la funcion fit() es para entrenar el modelo de ML
+    lasso_model = Lasso()
+    lasso_model.fit(X_train, Y_train) #la funcion fit() es para entrenar el modelo de ML
 
     # tira un predict random, para ver que funcione bien el modelo
-    predictions = ridge_model.predict(X_test)
+    predictions = lasso_model.predict(X_test)
     print(predictions)
 
 else:
@@ -83,6 +83,6 @@ else:
     
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.20, random_state=1, shuffle=True)
     
-    ridge_model = Ridge()
-    ridge_model.fit(X_train, Y_train)
+    lasso_model = Lasso()
+    lasso_model.fit(X_train, Y_train)
 
