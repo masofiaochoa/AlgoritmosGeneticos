@@ -30,4 +30,4 @@ MAX_INITIAL_DETOURS = 3
 MAX_GREEDY_CONNECT_STEPS = 5
 
 #Para calcular efectos de la corriente del rio
-DISTANCE_TRAVELED_TO_DRIFT_RATIO = 0.5 #Cada un metro avanzado se desplaza 0.5 m hacia abajo en y 
+DISTANCE_TRAVELED_TO_DRIFT_RATIO = 0.4 #Cada un metro avanzado se desplaza 0.5 m hacia abajo en y 
