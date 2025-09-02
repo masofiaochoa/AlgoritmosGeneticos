@@ -5,6 +5,7 @@
 import random
 
 from individual import Individual
+from config import GRID_GOAL
 
 #? Siendo que los padres son unicamente dos individuos, podriamos usar tuplas. Debatir.
 def crossover(parents: list[Individual]) -> list[Individual]:
@@ -13,6 +14,7 @@ def crossover(parents: list[Individual]) -> list[Individual]:
     
     # Buscar puntos de intersección
     intersection_points = set(parents[0].path) & set(parents[1].path)
+    intersection_points = [n for n in intersection_points if n[1] != GRID_GOAL[1]]
     if not intersection_points:
         # Si no hay intersección, retornar los padres
         return parents

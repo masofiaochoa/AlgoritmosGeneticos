@@ -84,20 +84,20 @@ def initialize_population(grid: Grid, model: Model) -> None:
     POPULATION.extend(initial)
 
     # Sort por fitness ascendente
-    POPULATION.sort(key=lambda ind: ind.fitness)
+    POPULATION.sort(key=lambda ind: ind.fitness, reverse=True)
 
     # Bookkeeping
-    MAXIMUMS.append(POPULATION[-1].fitness)
-    MINIMUMS.append(POPULATION[0].fitness)
+    MINIMUMS.append(POPULATION[-1].fitness)
+    MAXIMUMS.append(POPULATION[0].fitness)
     AVERAGES.append(st.mean(ind.fitness for ind in POPULATION))
 
-    printCurrentGen(0, POPULATION, MAXIMUMS[-1], MINIMUMS[-1])
+    printCurrentGen(0, POPULATION, MINIMUMS[-1], MINIMUMS[-1])
 
 def evolve_generation(grid: Grid, model: Model) -> None:
     global POPULATION, GENERATION
 
     # Ensure sorted
-    POPULATION.sort(key=lambda ind: ind.fitness)
+    POPULATION.sort(key=lambda ind: ind.fitness, reverse=True)
 
     next_generation: list[Individual] = []
 
@@ -107,7 +107,7 @@ def evolve_generation(grid: Grid, model: Model) -> None:
     # 2) Crossover
     for i in range(0, REMAINDER_POPULATION, 2):
         parents = [possible_parents[i], possible_parents[i + 1]]
-        if False:#random.random() <= CROSSOVER_CHANCE:
+        if random.random() <= CROSSOVER_CHANCE:
             children = crossover(parents)
         else:
             children = [copy.deepcopy(parents[0]), copy.deepcopy(parents[1])]
@@ -142,15 +142,13 @@ def evolve_generation(grid: Grid, model: Model) -> None:
     GENERATION += 1
         # Sort descending by target function (score)
 
-    POPULATION.sort(key=lambda ind: ind.fitness)
+    POPULATION.sort(key=lambda ind: ind.fitness, reverse=True)
 
-
-    
-    MAXIMUMS.append(POPULATION[-1].fitness)
-    MINIMUMS.append(POPULATION[0].fitness)
+    MAXIMUMS.append(POPULATION[0].fitness)
+    MINIMUMS.append(POPULATION[-1].fitness)
     AVERAGES.append(st.mean(ind.fitness for ind in POPULATION))
 
-    printCurrentGen(GENERATION, POPULATION, MAXIMUMS[-1], MINIMUMS[-1])
+    printCurrentGen(GENERATION, POPULATION, MINIMUMS[-1], MAXIMUMS[-1])
 
 # ----------------------------------------------------------------------------
 # MAIN
@@ -161,7 +159,7 @@ def main() -> None:
     initialize_population(grid, model)
 
     # Stop either by generation limit or by reaching a target score threshold
-    while GENERATION < TARGET_GENERATION and MINIMUMS[-1] > TARGET_FITNESS:
+    while GENERATION < TARGET_GENERATION and MAXIMUMS[-1] < TARGET_FITNESS:
         evolve_generation(grid, model)
 
 
