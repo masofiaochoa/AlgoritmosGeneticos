@@ -43,10 +43,10 @@ class Individual:
         
         
     def drift(self):
-        return #Funcionalidad anulada pues los algoritmos usados para elegir caminos no lograron adaptarse  correctamente
-    """     
+    #    return #Funcionalidad anulada pues los algoritmos usados para elegir caminos no lograron adaptarse  correctamente
+         
         if(self.partialDrift >= GRID_CELL_SIZE):
-            self.partialDrift = 0;
+            self.partialDrift -= GRID_CELL_SIZE;
             lastPos = self.path[-1]
             drift = (1, 0)
             driftedPos = (lastPos[0] + drift[0], lastPos[1] + drift[1])
@@ -55,7 +55,7 @@ class Individual:
             #si la posicion derivada por la corriente no esta fuera del grid, la deriva. Sino simplemente lo deja en el fondo del grid
             if(0 <= driftedRow < GRID_ROWS and 0 <= driftedCol < GRID_COLS):
                 self.path.append(driftedPos) 
-    """
+    
 
 
                 

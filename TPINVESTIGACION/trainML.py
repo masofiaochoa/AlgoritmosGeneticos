@@ -164,7 +164,7 @@ for name, model in models:
 
 
 
-# dado el analisis, elegimos Ridge Regression
+# dado el analisis, elegimos Lasso Regression
 
 
 # podriamos usar otro pero nos faltan datos (tenemos 11 filas nada más)

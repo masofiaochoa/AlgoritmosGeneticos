@@ -58,7 +58,7 @@ if __name__ == "__main__":
         msg = "%s: mean absolute error: %f, r2: %f, mean squared error: %f" % (name, -cv_results2.mean(),cv_results3.mean(),-cv_results4.mean())
         print(msg)
 
-    # dado el analisis, elegimos Ridge Regression
+    # dado el analisis, elegimos Lasso Regression
     # podriamos usar otro pero nos faltan datos (tenemos 11 filas nada más)
 
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.20, random_state=1, shuffle=True)

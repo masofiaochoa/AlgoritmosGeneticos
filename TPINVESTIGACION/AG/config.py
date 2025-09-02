@@ -14,13 +14,13 @@ REMAINDER_POPULATION = POPULATION_SIZE - ELITISM_CHOSEN_INDIVIDUAL_AMOUNT
 
 # Para el funcionamiento del modelo de machine learning
 WIND_SPEED = 10.7
-WIND_ANGLE = 66.66 # 0.0 NORTE, 90.0 ESTE, 180.0 OESTE, 270
+WIND_ANGLE = 270.66 # 0.0 NORTE, 90.0 ESTE, 180.0 SUR, 270 OESTE
 
-GRID_COLS = 20
-GRID_ROWS = 20
-GRID_CELL_SIZE = 50 #en metros
-GRID_START = (0, 0)
-GRID_GOAL = (9, GRID_COLS - 1)
+GRID_COLS = 50
+GRID_ROWS = 50
+GRID_CELL_SIZE = 20 #en metros
+GRID_START = (25, 0)
+GRID_GOAL = (25, GRID_COLS - 1)
 
 
 # Configuracion de poblacion inicial
@@ -30,4 +30,4 @@ MAX_INITIAL_DETOURS = 3
 MAX_GREEDY_CONNECT_STEPS = 5
 
 #Para calcular efectos de la corriente del rio
-DISTANCE_TRAVELED_TO_DRIFT_RATIO = 0.4 #Cada un metro avanzado se desplaza 0.5 m hacia abajo en y 
+DISTANCE_TRAVELED_TO_DRIFT_RATIO = 0.5 #Cada un metro avanzado se desplaza 0.5 m hacia abajo en y 

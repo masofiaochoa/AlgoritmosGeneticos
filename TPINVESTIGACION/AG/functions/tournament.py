@@ -14,7 +14,7 @@ def tournament(population: list[Individual]) -> list[Individual]:
     while len(selectedPossibleParents) < REMAINDER_POPULATION: # realizamos varios torneos hasta tener la cantidad necesaria
         contestants: list[Individual] = [] # contiene los participantes de un torneo
         contestantAmount = int(POPULATION_SIZE * TOURNAMENT_PERCENTAGE) # Tamaño de población * Porcentaje de torneo = Cant participantes (40%)
-        minFitness = 0
+        maxFitness = 0
         winner: Individual
 
         for _ in range(0, contestantAmount): # se seleccionan los participantes aleatoriamente
@@ -22,8 +22,8 @@ def tournament(population: list[Individual]) -> list[Individual]:
             contestants.append(population[i])
 
         for contestant in contestants: # se realiza un torneo, el ganador es aquel con menor fitness
-            if contestant.fitness > minFitness:
-                minFitness = contestant.fitness
+            if contestant.fitness > maxFitness:
+                maxFitness = contestant.fitness
                 winner = contestant
         selectedPossibleParents.append(winner) # el ganador del torneo puede reproducirse
 

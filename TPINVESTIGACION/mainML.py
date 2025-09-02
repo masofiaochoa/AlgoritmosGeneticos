@@ -2,7 +2,7 @@ import pickle
 from trainingData import * #archivo donde entrené el modelo
 
 import numpy as np
-from sklearn.linear_model import Ridge  
+from sklearn.linear_model import Lasso  
 from pathlib import Path
 
 class Model:
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     #para ver y reusar el modelo de ML
     current_dir = Path(__file__).parent
     model_path = current_dir / 'model.pkl'
-    pickle.dump(ridge_model, open(model_path,'wb')) #serializar -> de modelo a archivo
+    pickle.dump(lasso_model, open(model_path,'wb')) #serializar -> de modelo a archivo
     
     ml_model = Model()
 
