@@ -1,6 +1,8 @@
 # Individuo, contiene path (lista de (r,c)), valor de función objetivo, fitness.
 # Se redefine la función __str__ para poder printearlo de mejor manera
 
+import matplotlib.pyplot as plt
+
 from config import GRID_ROWS, GRID_COLS, DISTANCE_TRAVELED_TO_DRIFT_RATIO, GRID_CELL_SIZE
 from typing import List, Tuple
 from functions.helpers.calculatePathLength import calculatePathLength
@@ -24,8 +26,46 @@ class Individual:
             f"\tDistancia del camino: {self.pathDistance}\n"
             f"\tTiempo que toma recorrer el camino (Funcion objetivo): {self.targetFunctionValue:.6f}\n"
             f"\tFitness: {self.fitness:.6f}\n"
-            #f"Matriz de viaje:\n" + "\n".join([f"Fila {i:2d}: {row}" for i, row in enumerate(path_matrix)])
+            f"Matriz de viaje:\n" + "\n".join([f"Fila {i:2d}: {row}" for i, row in enumerate(path_matrix)])
             )
+    
+    def plot(self, show_grid: bool = True):
+        fig, ax = plt.subplots(figsize=(6, 6))
+
+
+        # Configuración de los límites
+        ax.set_xlim(-0.5, GRID_COLS - 0.5)
+        ax.set_ylim(-0.5, GRID_ROWS - 0.5)
+        ax.set_aspect('equal')
+
+
+        if show_grid:
+            ax.set_xticks(range(GRID_COLS))
+            ax.set_yticks(range(GRID_ROWS))
+            ax.grid(True, which='both', color='lightgrey', linewidth=0.5)
+
+
+        # Extraer filas y columnas del path
+        rows = [p[0] for p in self.path]
+        cols = [p[1] for p in self.path]
+
+
+        # Dibujar el camino
+        ax.plot(cols, rows, color='red', linewidth=2, marker='o', markersize=4)
+
+
+        # Marcar inicio y fin
+        ax.scatter(cols[0], rows[0], color='green', s=100, label='Inicio')
+        ax.scatter(cols[-1], rows[-1], color='blue', marker='x', s=100, label='Fin')
+
+
+        # Invertir eje Y (para que fila 0 esté arriba como en matrices)
+        ax.invert_yaxis()
+
+
+        ax.legend()
+        plt.title("Representación del Individuo")
+        plt.show()
     
     def addPathStep(self, nextStep: Tuple[int, int]):
         partialDistanceTraveled = calculatePathLength([self.path[-1], nextStep]) #Distancia del ultimo paso al proximo paso

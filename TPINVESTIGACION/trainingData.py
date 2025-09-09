@@ -1,4 +1,5 @@
 import warnings
+from tabulate import tabulate
 import pandas
 from sklearn.linear_model import LinearRegression, ElasticNet, Lasso, Ridge
 from sklearn.neighbors import KNeighborsRegressor
@@ -40,7 +41,7 @@ if __name__ == "__main__":
     models.append(('SVR', SVR())) 
 
     # Evaluar cada modelo e imprimir los resultados
-    results = []
+    results = [['Modelo', 'MAE', 'R2', 'MSE']]
     names = []
 
     #para cada nombre de modelo y modelo en la list de modelos
@@ -55,6 +56,7 @@ if __name__ == "__main__":
         cv_results2 = cross_val_score(model, X, Y, cv=kfold, scoring=neg_mean_absolute_error_scoring)
         cv_results3 = cross_val_score(model, X, Y, cv=kfold, scoring=r2_scoring)
         cv_results4 = cross_val_score(model, X, Y, cv=kfold, scoring=neg_mean_squared_error_scoring)
+        results.append([name, -cv_results2.mean(), cv_results3.mean(), -cv_results4.mean()])
         msg = "%s: mean absolute error: %f, r2: %f, mean squared error: %f" % (name, -cv_results2.mean(),cv_results3.mean(),-cv_results4.mean())
         print(msg)
 
@@ -69,6 +71,8 @@ if __name__ == "__main__":
     # tira un predict random, para ver que funcione bien el modelo
     predictions = lasso_model.predict(X_test)
     print(predictions)
+    with open('output/results_table.tex', 'w') as f:
+        f.write(tabulate(results, headers='firstrow', tablefmt='latex'))
 
 else:
     # Cuando se importa desde otro archivo, solo entrenar el modelo sin prints
