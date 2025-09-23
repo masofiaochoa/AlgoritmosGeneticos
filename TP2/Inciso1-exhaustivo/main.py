@@ -27,6 +27,7 @@ OBJECT_ROOSTER_SIZE: int = len(OBJECT_ROOSTER)
 BACKPACKS: list[Backpack] = []
 
 startTime: float = time.time()
+
 for i in range(1, 2**OBJECT_ROOSTER_SIZE): #Loop que corre n veces donde n es la cantidad de combinaciones posibles con la cantidad de objetos del listado
     backpack: Backpack = Backpack(BACKPACK_MAX_VOLUME, combination=i)
 

@@ -10036,7 +10036,7 @@ Mochila Nro 128
 		Volumen ocupado: 60
 		Valor / Volumen: 0.3
 -------------------------------------------
-MEJOR SOLUCION OBTENIDA EN 0.01227 segundos:
+MEJOR SOLUCION OBTENIDA EN 0.01755 segundos:
 
 Mochila Nro 759
 		Combinación: 1011110111

@@ -43,8 +43,6 @@ class Individual:
         
         
     def drift(self):
-    #    return #Funcionalidad anulada pues los algoritmos usados para elegir caminos no lograron adaptarse  correctamente
-         
         if(self.partialDrift >= GRID_CELL_SIZE):
             self.partialDrift -= GRID_CELL_SIZE;
             lastPos = self.path[-1]
