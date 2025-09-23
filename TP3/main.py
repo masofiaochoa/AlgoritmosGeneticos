@@ -1,10 +1,11 @@
-from typing import Dict
+from typing import Dict, List
 import pandas as pd
 
 from config import *
 from enum_method import *
 
 from capital import Capital
+from functions.Routing_Methods.geneticAlgorithmRoute import geneticAlgorithmRoute
 from functions.Routing_Methods.nearestNeighborRoute import nearestNeighborRoute
 from functions.Routing_Methods.shortestPathToVisitAllRoute import shortestPathToVisitAllRoute
 
@@ -37,15 +38,19 @@ for origin in df.index:
 
 
 
+#PROGRAMA PRINCIPAL
+route: List[str];
+distance: float;
 
-#PROGRAMA PRINCIPAL INCISO A
+#INCISO A
 if(ROUTING_METHOD == Routing_Method.NEAREST_TO_START_CITY):
     route, distance = nearestNeighborRoute(START_CITY, CAPITALS)
     print("Metodo de elección de ruta: “Desde cada ciudad ir a la ciudad más cercana no visitada. Con una ciudad de partida definida por el usuario")
     print("Ciudad de partida:", START_CITY)
     print("Recorrido completo:", " -> ".join(route))
     print(f"Longitud total del trayecto: {distance:.1f} km")
-    
+
+#INCISO B    
 elif(ROUTING_METHOD == Routing_Method.SHORTEST_PATH_TO_ALL):
     route, distance = shortestPathToVisitAllRoute(CAPITALS)
     print("Metodo de elección de ruta: “Recorrido mínimo para visitar todas las capitales de las provincias de la República Argentina yendo siempre a la ciudad sin visitar mas cercana")
@@ -53,5 +58,12 @@ elif(ROUTING_METHOD == Routing_Method.SHORTEST_PATH_TO_ALL):
     print("Recorrido completo:", " -> ".join(route))
     print(f"Longitud total del trayecto: {distance:.1f} km")
     
+#NO IMPLEMENTADO
 elif(ROUTING_METHOD == Routing_Method.GENETIC_ALGORITHM):
-    print("A implementar")
+    route, distance = geneticAlgorithmRoute(CAPITALS)
+    
+    selectionMethodStr = "ROULETTE" if SELECTION_METHOD == 1 else "TOURNAMENT"
+    print(f"Metodo de elección de ruta: Algoritmo genetico con metodo de selección {selectionMethodStr}")
+    print("Ciudad de partida:", route[0])
+    print("Recorrido completo:", " -> ".join(route))
+    print(f"Longitud total del trayecto: {distance:.1f} km")
