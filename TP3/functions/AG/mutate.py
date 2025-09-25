@@ -1,18 +1,16 @@
 import random
 
 from config import *
-from individual import Individual
+from capital import Capital
+from capitalRoute import CapitalRoute
 
-#Muta un individuo haciendo una mutación inversa sobre un gen aleatorio del mismo
-def mutate(individual: Individual) -> Individual:
-    #Mascara de bits
-    mutatedGen: int = random.randint(0, CHROMOSOME_LEN - 1);
-    #Operacion binaria sobre el cromosoma original para generar el cromosoma mutado
-    mutatedChromosome: int = individual.chromosome ^ (1 << mutatedGen);
+#Muta una ruta haciendo un intercambio entre dos posiciones del recorrido de capitales sin incluir la capital de origen ni de destino
+def mutate(capRoute: CapitalRoute) -> CapitalRoute:
+    
+    indexsToSwap: tuple[int, int] = [random.sample(range(1, len(capRoute.route) - 1), 2)] #Elige dos indices aleatorios para swapear capitales en la ruta SIN incluir origen ni final
 
-    #asignación del cromosoma mutado al individuo original para generar el cromosoma mutado
-    individual.chromosome = mutatedChromosome
-    individual.targetFunctionValue = None
-    individual.fitness = None
-
-    return individual
+    auxCap: Capital = capRoute.route[indexsToSwap[0]]
+    capRoute.route[indexsToSwap[0]] = capRoute.route[indexsToSwap[1]]
+    capRoute.route[indexsToSwap[1]] = auxCap
+    capRoute.recalcuteRouteDistance()
+    return capRoute

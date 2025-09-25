@@ -3,18 +3,16 @@ from typing import Dict
 #Genera una solucion por cada ciudad de inicio utilizando la función del inciso A (Ir siempre a la ciudad mas cercana no visitada)
 #Compara todas las soluciones y elige la mejor
 from capital import Capital
+from capitalRoute import CapitalRoute
 from functions.Routing_Methods.nearestNeighborRoute import nearestNeighborRoute
 
-def shortestPathToVisitAllRoute(capitals: Dict[str, Capital]) -> tuple[list[str], float]:
-    best_route: list[str] = []
-    best_distance: float = float("inf")
+def shortestPathToVisitAllRoute(capitals: Dict[str, Capital]) -> CapitalRoute:
+    bestRoute: CapitalRoute | None = None
 
-    # Probar desde cada ciudad como ciudad inicial
-    for start_city in capitals.keys():
-        route, distance = nearestNeighborRoute(start_city, capitals)
+    #Probamos cada capital como capital inicial a ver cual da el mejor resultado con el metodo de nearestNeighborRoute
+    for startCapital in capitals.keys():
+        possibleBestRoute = nearestNeighborRoute(startCapital, capitals)
+        if bestRoute is None or possibleBestRoute.distance < bestRoute.distance: #El None se da solamente en la primera iteración
+            bestRoute = possibleBestRoute
 
-        if distance < best_distance:
-            best_distance = distance
-            best_route = route
-
-    return best_route, best_distance
+    return bestRoute

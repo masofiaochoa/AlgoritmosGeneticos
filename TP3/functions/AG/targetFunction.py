@@ -1,7 +1,6 @@
 from config import *
+from capitalRoute import CapitalRoute
 
-#Función objetivo del enunciado, redondeamos a 6 decimales
-def targetFunction(chromosome: int) -> float:
-    value: float = round((chromosome / COEF) ** 2, 6)
-    
-    return value
+#Función objetivo, lo tomamos como la distancia total que conlleva recorrer la ruta
+def targetFunction(capRoute: CapitalRoute) -> float:
+    return CapitalRoute.getRouteDistance();

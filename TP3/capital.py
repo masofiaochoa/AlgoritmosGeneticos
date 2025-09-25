@@ -9,19 +9,20 @@ class Capital:
         self.isOrigin: bool = False
         self.distances: Dict[str, float] = {}
 
-    def getDistanceTo(self, otherCapital: str) -> float:
-        return self.distances.get(otherCapital, float('inf'))
+    #Obtiene la distancia de la capital actual hacia la otra capital, lo hace buscando con el nombre de la otra capital la entrada en el diccionario generado a partir del CSV
+    def getDistanceTo(self, otherCapitalName: str) -> float:
+        return self.distances.get(otherCapitalName, float('inf'))
     
     #Devuelve el nombre de la capital más cercana no visitada.
     def nearestUnvisited(self, capitals: Dict[str, 'Capital']) -> str | None:
         nearest = None
         min_dist = float('inf')
-        for city_name, city_obj in capitals.items():
-            if not city_obj.visited:
-                dist = self.getDistanceTo(city_name)
+        for capitalName, capitalObject in capitals.items():
+            if not capitalObject.visited:
+                dist = self.getDistanceTo(capitalName)
                 if dist < min_dist:
                     min_dist = dist
-                    nearest = city_name
+                    nearest = capitalName
         return nearest
 
     def __repr__(self) -> str:

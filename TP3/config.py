@@ -2,10 +2,10 @@ from enum_method import *
 #Contiene constantes globales que sirven para configurar la corrida a realizarce
 
 #PARAMETROS
-START_CITY = "SAN LUIS"
+START_CAPITAL = Capital_Names.USHUAIA.value #IMPORTANTE EL .VALUE
 
 #METODO DE GENERACION DE RUTA
-ROUTING_METHOD = Routing_Method.NEAREST_TO_START_CITY
+ROUTING_METHOD = Routing_Method.SHORTEST_PATH_TO_ALL
 
 #VARIABLES ESPECIFICAS DE AG
 SELECTION_METHOD = AG_Method.ROULETTE

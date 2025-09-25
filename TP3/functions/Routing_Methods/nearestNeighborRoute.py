@@ -1,27 +1,27 @@
 from typing import Dict
 from capital import Capital
+from capitalRoute import CapitalRoute
 
-def nearestNeighborRoute(start: str, capitals: Dict[str, Capital]) -> tuple[list[str], float]:
-    # Reiniciamos visitados
+#Encuentra una ruta desde una determinada capital de inicio recorriendo todas las demas capitales no visitadas
+#Recorre siempre primero la capital no visitada mas cercana a la capital actual, y al final retorna a la capital de inicio
+def nearestNeighborRoute(start: str, capitals: Dict[str, Capital]) -> CapitalRoute:
+    #Reiniciamos el estado 'visitado' en todas las capitales
     for c in capitals.values():
         c.visited = False
 
-    route = [start]
-    capitals[start].visited = True
-    total_distance = 0.0
-    current_city = start
+    startCapital = capitals[start]
+    capRoute = CapitalRoute(startCapital)
+    startCapital.visited = True
+    currentCapital = startCapital
 
-    while len(route) < len(capitals):
-        next_city = capitals[current_city].nearestUnvisited(capitals)
-        if next_city is None:
-            break  # por si hay algún problema
-        total_distance += capitals[current_city].getDistanceTo(next_city)
-        capitals[next_city].visited = True
-        route.append(next_city)
-        current_city = next_city
+    while len(capRoute.route) < len(capitals):
+        nearestCapitalToCurrent = currentCapital.nearestUnvisited(capitals)
+        if nearestCapitalToCurrent is None: #Si no hay mas capitales sin visitar, volvemos (No debería cumplirse nunca esta condicion dada la condicion del while)
+            break
+        nextCapital = capitals[nearestCapitalToCurrent] #Lo buscamos en el diccioanrio de capitales por nombre para obtener el objeto
+        capRoute.addCapital(nextCapital)
+        nextCapital.visited = True
+        currentCapital = nextCapital
 
-    # Regresar a la ciudad de inicio
-    total_distance += capitals[current_city].getDistanceTo(start)
-    route.append(start)
-
-    return route, total_distance
+    capRoute.returnToStartCapital()
+    return capRoute

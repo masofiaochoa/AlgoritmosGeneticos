@@ -39,31 +39,23 @@ for origin in df.index:
 
 
 #PROGRAMA PRINCIPAL
-route: List[str];
-distance: float;
 
-#INCISO A
-if(ROUTING_METHOD == Routing_Method.NEAREST_TO_START_CITY):
-    route, distance = nearestNeighborRoute(START_CITY, CAPITALS)
+# INCISO A
+if ROUTING_METHOD == Routing_Method.NEAREST_TO_START_CAPITAL:
+    route = nearestNeighborRoute(START_CAPITAL, CAPITALS)
     print("Metodo de elección de ruta: “Desde cada ciudad ir a la ciudad más cercana no visitada. Con una ciudad de partida definida por el usuario")
-    print("Ciudad de partida:", START_CITY)
-    print("Recorrido completo:", " -> ".join(route))
-    print(f"Longitud total del trayecto: {distance:.1f} km")
+    print("Ciudad de partida:", route.startCapital.name)
+    print("Recorrido completo:", " -> ".join(route.getCapitalNames()))
+    print(f"Longitud total del trayecto: {route.distance:.1f} km")
 
-#INCISO B    
-elif(ROUTING_METHOD == Routing_Method.SHORTEST_PATH_TO_ALL):
-    route, distance = shortestPathToVisitAllRoute(CAPITALS)
-    print("Metodo de elección de ruta: “Recorrido mínimo para visitar todas las capitales de las provincias de la República Argentina yendo siempre a la ciudad sin visitar mas cercana")
-    print("Ciudad de partida:", route[0])
-    print("Recorrido completo:", " -> ".join(route))
-    print(f"Longitud total del trayecto: {distance:.1f} km")
-    
-#NO IMPLEMENTADO
-elif(ROUTING_METHOD == Routing_Method.GENETIC_ALGORITHM):
-    route, distance = geneticAlgorithmRoute(CAPITALS)
-    
-    selectionMethodStr = "ROULETTE" if SELECTION_METHOD == 1 else "TOURNAMENT"
-    print(f"Metodo de elección de ruta: Algoritmo genetico con metodo de selección {selectionMethodStr}")
-    print("Ciudad de partida:", route[0])
-    print("Recorrido completo:", " -> ".join(route))
-    print(f"Longitud total del trayecto: {distance:.1f} km")
+# INCISO B    
+elif ROUTING_METHOD == Routing_Method.SHORTEST_PATH_TO_ALL:
+    route = shortestPathToVisitAllRoute(CAPITALS)
+    print("Metodo de elección de ruta: “Recorrido mínimo para visitar todas las capitales de las provincias de la República Argentina yendo siempre a la ciudad sin visitar más cercana")
+    print("Ciudad de partida:", route.startCapital.name)
+    print("Recorrido completo:", " -> ".join(route.getCapitalNames()))
+    print(f"Longitud total del trayecto: {route.distance:.1f} km")
+
+# NO IMPLEMENTADO (placeholder)
+elif ROUTING_METHOD == Routing_Method.GENETIC_ALGORITHM:
+    print("Algoritmo genético aún no implementado.")

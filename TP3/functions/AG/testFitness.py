@@ -1,8 +1,9 @@
-from individual import Individual
+from capitalRoute import CapitalRoute
+from functions.AG import targetFunction
 
-#Funcion fitness del enunciado (Función objetivo del individuo dividido el total de la suma de todas las funciones objetivos de la población)
-def testFitness(individual: Individual, TARGET_FUNCTION_TOTAL: float) -> float:
+#Funcion fitness lo tomamos como la funcion objetivo de la ruta especifica, dividido la sumatoria de todas las funciones objetivos de las demas rutas
+def testFitness(capitalRoute: CapitalRoute, capitalRoutesTargetFunctionTotal: float) -> float:
 
-    fitnessFunction: float = individual.targetFunctionValue / TARGET_FUNCTION_TOTAL
+    fitnessFunction: float = (capitalRoutesTargetFunctionTotal - targetFunction(capitalRoute)) / capitalRoutesTargetFunctionTotal
 
     return fitnessFunction
