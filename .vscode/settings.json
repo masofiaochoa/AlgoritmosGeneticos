@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./TP3/functions/AG"
+    ]
+}

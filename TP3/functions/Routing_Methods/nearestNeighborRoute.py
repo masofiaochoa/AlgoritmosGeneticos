@@ -4,7 +4,7 @@ from capitalRoute import CapitalRoute
 
 #Encuentra una ruta desde una determinada capital de inicio recorriendo todas las demas capitales no visitadas
 #Recorre siempre primero la capital no visitada mas cercana a la capital actual, y al final retorna a la capital de inicio
-def nearestNeighborRoute(start: str, capitals: Dict[str, Capital]) -> CapitalRoute:
+def nearestNeighborRoute(start: str, capitals: Dict[str, Capital], returnToStart: bool = True) -> CapitalRoute:
     #Reiniciamos el estado 'visitado' en todas las capitales
     for c in capitals.values():
         c.visited = False
@@ -22,6 +22,6 @@ def nearestNeighborRoute(start: str, capitals: Dict[str, Capital]) -> CapitalRou
         capRoute.addCapital(nextCapital)
         nextCapital.visited = True
         currentCapital = nextCapital
-
-    capRoute.returnToStartCapital()
+    if(returnToStart):
+        capRoute.returnToStartCapital()
     return capRoute

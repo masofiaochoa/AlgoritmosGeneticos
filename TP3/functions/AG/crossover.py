@@ -1,39 +1,48 @@
 import random
-
+from typing import List
 from config import *
 from capital import Capital
 from capitalRoute import CapitalRoute
 
-#Genera dos hijos a partir de dos padres cruzando sus caminos en un punto aleatorio sin incluir origen (CAPITALS[0]) ni destino (Vuelta al origen) CAPITALS[len(CAPITALS) - 1])
-def crossover(parents: list[CapitalRoute]) -> list[CapitalRoute]:
+# función auxiliar: aplica CX entre dos padres y devuelve un hijo
+def cycleCrossover(p1: CapitalRoute, p2: CapitalRoute, size: int) -> CapitalRoute:
+    # Inicializamos la ruta del hijo con None
+    childRouteNames = [None] * size
+    visited = set()
+    index = random.randint(0, size - 1)  # índice inicial aleatorio
+
+    # Creamos listas de nombres de capitales en los padres. trabajo con nombres para evitar problemas con el deepcopy
+    p1_names = [c.name for c in p1.route]
+    p2_names = [c.name for c in p2.route]
+
+    # Construimos el ciclo usando los nombres
+    while index not in visited:
+        visited.add(index)
+        childRouteNames[index] = p1_names[index]  # copiamos la capital desde p1 (por nombre)
+        capitalName = p2_names[index]             # tomamos la capital correspondiente de p2
+        index = p1_names.index(capitalName)       # siguiente índice del ciclo será donde está esa capital en p1
+
+    # Completamos los huecos con capitales de p2 (por nombre)
+    for i in range(size):
+        if childRouteNames[i] is None:
+            childRouteNames[i] = p2_names[i]
+
+    # Reconstruimos los objetos Capital a partir de los nombres
+    # Usamos la lista combinada de p1 + p2 para asegurarnos de tomar los objetos correctos
+    child = CapitalRoute(p1.startCapital)
+    child.route = [next(c for c in p1.route + p2.route if c.name == name) for name in childRouteNames]
+
+    # Recalculamos la distancia de la ruta del hijo
+    child.recalculateRouteDistance()
+    return child
+
+
+def crossover(parents: List[CapitalRoute]) -> List[CapitalRoute]:
     parent1, parent2 = parents
-    
-    # Elegimos punto de corte aleatorio evitando el capital de inicio (indice 0) y capital de fin (indice len(parent1.route) - 1)
-    start = 1
-    end = len(parent1.route) - 2
-    cut = random.randint(start, end)
-    
-    # Hijo 1
-    child1Route = parent1.route[:cut] #copio mitad inferior de parent1
-    for cap in parent2.route[1:-1]:  # por cada capital de la ruta de parent2, ignorando primera y ultima capital
-        if cap not in child1Route: #agrego solamente los no duplicados
-            child1Route.append(cap)
-    child1Route.append(parent1.startCapital)  #Cerramos el trayecto agregando la startCapital como ultima capital
-    
-    # Hijo 2:
-    child2Route = parent2.route[:cut] #copio mitad inferior de parent2
-    for cap in parent1.route[1:-1]: #por cada capital de la ruta de parent1, ignorando primera y ultima capital
-        if cap not in child2Route:
-            child2Route.append(cap)
-    child2Route.append(parent2.startCapital)
-    
-    # Creamos CapitalRoute para devolverlos
-    child1 = CapitalRoute(parent1.startCapital)
-    child1.route = child1Route
-    child1.recalcuteRouteDistance()
-    
-    child2 = CapitalRoute(parent2.startCapital)
-    child2.route = child2Route
-    child2.recalcuteRouteDistance()
-    
+    size = len(parent1.route)
+    # generar los dos hijos (Notar que el orden de los padres se invierte)
+    child1 = cycleCrossover(parent1, parent2, size)
+    child2 = cycleCrossover(parent2, parent1, size)
     return [child1, child2]
+
+

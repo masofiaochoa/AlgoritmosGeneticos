@@ -1,6 +1,7 @@
 from typing import Dict, List
 import pandas as pd
 
+from capitalRoute import CapitalRoute
 from config import *
 from enum_method import *
 
@@ -58,4 +59,8 @@ elif ROUTING_METHOD == Routing_Method.SHORTEST_PATH_TO_ALL:
 
 # NO IMPLEMENTADO (placeholder)
 elif ROUTING_METHOD == Routing_Method.GENETIC_ALGORITHM:
-    print("Algoritmo genético aún no implementado.")
+    finalPopulation: list[CapitalRoute] = geneticAlgorithmRoute(CAPITALS)
+    
+    for cp in finalPopulation:
+        print(cp)
+        print('\n')

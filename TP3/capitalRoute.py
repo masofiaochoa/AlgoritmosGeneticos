@@ -28,7 +28,7 @@ class CapitalRoute:
 
     
     #Recalcula la distancia total de la ruta, se usa solamente en el metodo de AG cuando la ruta sufre alteraciones como una mutación o un crossover
-    def recalcuteRouteDistance(self):
+    def recalculateRouteDistance(self):
         self.distance = 0.0
         for i in range(0, len(self.route) - 1): #Range no incluye el extremo superior por ende no es necesario usar len(self.route) - 2
             self.distance += self.route[i].getDistanceTo(self.route[i + 1].name)
@@ -38,5 +38,5 @@ class CapitalRoute:
         return len(self.route)
 
     def __repr__(self) -> str:
-        names = " -> ".join(self.get_cities_names())
-        return f"CapitalRoute(start={self.startCapital.name}, distance={self.distance:.1f} KMs, route={names})"
+        names = " -> ".join(self.getCapitalNames())
+        return f"CapitalRoute(start={self.startCapital.name}, distance={self.distance:.1f} KMs, fitness={self.fitness}), capitals:{names}"

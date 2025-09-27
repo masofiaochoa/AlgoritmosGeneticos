@@ -1,50 +1,53 @@
 import random
 from typing import Dict, List
+from functions.AG.crossover import crossover
+from functions.AG.generateInitialPopulation import generateInitialPopulation
+from functions.AG.getPopulationFitness import getPopulationFitness
+from functions.AG.mutate import mutate
+from functions.AG.selectPossibleParents import selectPossibleParents
 from capital import Capital
 from capitalRoute import CapitalRoute
 from config import *
 
-def geneticAlgorithmRoute(start: str, capitals: Dict[str, Capital]) -> tuple[list[str], float]:
-    # ---- INICIALIZACIÓN ----
-    all_capitals_except_start: List[Capital] = [c for name, c in capitals.items() if name != start]
-    population: List[CapitalRoute] = []
+def geneticAlgorithmRoute(capitals: Dict[str, Capital]) -> tuple[list[str], float]:
+    #Genero poblacion inicial
+    GENERATION: int = 0
+    POPULATION = generateInitialPopulation(capitals)
+    
 
-    for _ in range(POPULATION_SIZE):
-        route = CapitalRoute(capitals[start])
-        shuffled_caps = all_capitals_except_start[:]
-        random.shuffle(shuffled_caps)
-        for cap in shuffled_caps:
-            route.addCapital(cap)
-        route.returnToStartCapital()
-        population.append(route)
+    #loop principal
+    for i in range(0, TARGET_GENERATION):
+        nextGeneration: list[CapitalRoute] = [];
 
-    # ---- LOOP PRINCIPAL DEL AG ----
-    for generation in range(MAX_GENERATIONS):
-        # Calcular fitness relativo
-        total_distance = sum(route.getRouteDistance() for route in population)
-        for route in population:
-            route.fitness = (total_distance - route.getRouteDistance()) / total_distance
+        #SELECCIONAR POSIBLES PADRES
+        possibleParents: list[CapitalRoute] = selectPossibleParents(SELECTION_METHOD, POPULATION);
 
-        # ---- SELECCIÓN ----
-        new_population: List[CapitalRoute] = []
-        for _ in range(POPULATION_SIZE // 2):
-            # Roulette wheel selection
-            parents = random.choices(
-                population,
-                weights=[route.fitness for route in population],
-                k=2
-            )
-            # ---- CROSSOVER ----
-            child1, child2 = crossover(parents[0], parents[1])
-            # ---- MUTACIÓN ----
-            if random.random() < MUTATION_RATE:
-                child1 = mutate(child1)
-            if random.random() < MUTATION_RATE:
-                child2 = mutate(child2)
-            new_population.extend([child1, child2])
+        #CRUZA
+        for i in range(0, REMAINDER_POPULATION, 2):
+            parents: list[CapitalRoute] = [possibleParents[i], possibleParents[i + 1]]
+            children: list[CapitalRoute] = []
 
-        population = new_population
+            if(random.random() <= CROSSOVER_CHANCE):
+                children = crossover(parents)
+            else:
+                children = parents
 
-    # ---- SELECCIONAR MEJOR INDIVIDUO ----
-    best_route = min(population, key=lambda r: r.getRouteDistance())
-    return best_route.getCapitalNames(), best_route.getRouteDistance()
+            nextGeneration.extend(children)
+
+        #MUTACION
+        for i in range(len(nextGeneration)):
+            if(random.random() <= MUTATION_CHANCE):
+                mutant: CapitalRoute = mutate(nextGeneration[i]);
+                nextGeneration[i] = mutant;
+        
+        #ELITISMO
+        for i in range(0, ELITISM_CHOSEN_INDIVIDUAL_AMOUNT):
+            nextGeneration.append(POPULATION[i]) #los individuos del principio del arreglo son los de mayor fitness
+
+        #finalmente calculamos fitness y ordenamos la problacion
+        POPULATION = getPopulationFitness(nextGeneration);
+        POPULATION = sorted(POPULATION, key = lambda individual: individual.distance)
+
+        GENERATION += 1;
+        
+    return POPULATION
