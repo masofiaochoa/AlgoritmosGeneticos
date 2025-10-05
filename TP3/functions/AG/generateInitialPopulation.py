@@ -14,20 +14,22 @@ def generateInitialPopulation(capitals: Dict[str, Capital]):
     
     initialPopulation: list[CapitalRoute] = []
     
-    for _ in range(RANDOM_ROUTE_GENERATED):
+    
+    for _ in range(POPULATION_SIZE):
         randomStartCapital = random.choice(list(capitals.keys()));
         # Creamos una copia independiente de las capitales para esta ruta
         localCapitals = copy.deepcopy(capitals)
         capRoute: CapitalRoute = randomRoute(randomStartCapital, localCapitals)
         initialPopulation.append(capRoute)
         
-        
-    for _ in range(NEAREST_NEIGHBOR_ROUTE_GENERATED):
-        randomStartCapital = random.choice(list(capitals.keys()));
+        # hay que borrarlo... lo dejo por las dudas -sofi
+    #for _ in range(NEAREST_NEIGHBOR_ROUTE_GENERATED):
+    #    randomStartCapital = random.choice(list(capitals.keys()));
         # Creamos una copia independiente de las capitales para esta ruta
-        localCapitals = copy.deepcopy(capitals)
-        capRoute: CapitalRoute = nearestNeighborRoute(randomStartCapital, localCapitals, returnToStart=False)
-        initialPopulation.append(capRoute)
+    #    localCapitals = copy.deepcopy(capitals)
+    #    capRoute: CapitalRoute = nearestNeighborRoute(randomStartCapital, localCapitals, returnToStart=False)
+    #    initialPopulation.append(capRoute)
+
     initialPopulation = getPopulationFitness(initialPopulation)
 
     return initialPopulation

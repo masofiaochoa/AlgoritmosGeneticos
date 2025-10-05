@@ -14,7 +14,7 @@ class Capital:
         return self.distances.get(otherCapitalName, float('inf'))
     
     #Devuelve el nombre de la capital más cercana no visitada.
-    def nearestUnvisited(self, capitals: Dict[str, 'Capital']) -> str | None:
+    def nearestUnvisited(self, capitals: Dict[str, 'Capital']) -> str:
         nearest = None
         min_dist = float('inf')
         for capitalName, capitalObject in capitals.items():

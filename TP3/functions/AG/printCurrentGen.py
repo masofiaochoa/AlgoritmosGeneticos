@@ -1,4 +1,4 @@
-from CapitalRoute import capitalRoute
+from capitalRoute import CapitalRoute
 from config import *
 
 #Formatea e imprime los datos de la generación actual de individuos.
