@@ -9,6 +9,7 @@ from capital import Capital
 from functions.Routing_Methods.geneticAlgorithmRoute import geneticAlgorithmRoute
 from functions.Routing_Methods.nearestNeighborRoute import nearestNeighborRoute
 from functions.Routing_Methods.shortestPathToVisitAllRoute import shortestPathToVisitAllRoute
+from functions.AG.plot_utils import plot_route_cartopy
 
 #VARIABLES
 CAPITALS: Dict[str, Capital] = {}
@@ -30,6 +31,7 @@ assert set(df.index) == set(df.columns), "Fila y columnas no coinciden"
 
 # CREAMOS LAS CAPITALES
 CAPITALS = {name: Capital(name, i) for i, name in enumerate(df.index)}
+print([capital.name for capital in CAPITALS.values()])
 
 # CARGAMOS LAS DISTANCIAS DE CADA CAPITAL A TODAS LAS DEMAS CAPITALES
 for origin in df.index:
@@ -61,6 +63,8 @@ elif ROUTING_METHOD == Routing_Method.SHORTEST_PATH_TO_ALL:
 elif ROUTING_METHOD == Routing_Method.GENETIC_ALGORITHM:
     finalPopulation: list[CapitalRoute] = geneticAlgorithmRoute(CAPITALS)
     
-    for cp in finalPopulation:
-        print(cp)
-        print('\n')
+    # Se muestran los cromosomas de la población final
+    for i, cp in enumerate(finalPopulation):
+        print(f"Cromosoma:{i}\n\t{cp}\n")
+
+    plot_route_cartopy(finalPopulation[0])
