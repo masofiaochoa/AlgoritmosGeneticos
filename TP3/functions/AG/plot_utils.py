@@ -35,25 +35,33 @@ capital_coords = {
 # --- FUNCION DE GRAFICO ---
 def plot_route_cartopy(capRoute: CapitalRoute) -> None:
     route_names = capRoute.getCapitalNames()
-    
     lats = [capital_coords[c][0] for c in route_names]
     lons = [capital_coords[c][1] for c in route_names]
 
-    # Proyección geográfica (plana)
     proj = ccrs.PlateCarree()
-
     fig, ax = plt.subplots(figsize=(8, 10), subplot_kw={"projection": proj})
-    ax.set_extent([-73, -53, -56, -21])  # Extensión aproximada del mapa de Argentina
+    ax.set_extent([-73, -53, -56, -21])
 
-    # Agregar elementos de fondo (mapa base)
     ax.add_feature(cfeature.LAND, facecolor="lightgray")
     ax.add_feature(cfeature.COASTLINE)
     ax.add_feature(cfeature.BORDERS, linestyle=":")
     ax.add_feature(cfeature.LAKES, alpha=0.5)
     ax.add_feature(cfeature.RIVERS, alpha=0.5)
 
-    # Dibujar la ruta
-    ax.plot(lons, lats, '--X', color='crimson', linewidth=1.8, markersize=8, transform=proj)
+    # Flechas para dirección
+    for i in range(len(lats) - 1):
+        ax.annotate(
+            '', 
+            xy=(lons[i+1], lats[i+1]), 
+            xytext=(lons[i], lats[i]),
+            arrowprops=dict(arrowstyle="->", color='blue', lw=1.2),
+            annotation_clip=False,
+            transform=proj
+        )
+
+    # Inicio y fin destacados
+    ax.plot(lons[0], lats[0], marker='o', color='green', markersize=12, label='Inicio', transform=proj)
+    ax.plot(lons[-1], lats[-1], marker='o', color='red', markersize=12, label='Fin', transform=proj)
 
     # Etiquetar capitales
     for city in route_names:

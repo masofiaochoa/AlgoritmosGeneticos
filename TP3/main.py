@@ -64,7 +64,7 @@ elif ROUTING_METHOD == Routing_Method.GENETIC_ALGORITHM:
     finalPopulation: list[CapitalRoute] = geneticAlgorithmRoute(CAPITALS)
     
     # Se muestran los cromosomas de la población final
-    for i, cp in enumerate(finalPopulation):
-        print(f"Cromosoma:{i}\n\t{cp}\n")
+    # for i, cp in enumerate(finalPopulation):
+    #     print(f"Cromosoma:{i}\n\t{cp}\n")
 
     plot_route_cartopy(finalPopulation[0])

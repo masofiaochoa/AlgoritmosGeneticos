@@ -11,11 +11,12 @@ def cycleCrossover(p1: CapitalRoute, p2: CapitalRoute, size: int) -> CapitalRout
     visited = set()
     index = random.randint(0, size - 1)  # índice inicial aleatorio
 
-    # Creamos listas de nombres de capitales en los padres. trabajo con nombres para evitar problemas con el deepcopy
+    # Creamos listas de nombres de capitales en los padres. Trabajo con nombres para evitar problemas con el deepcopy
     p1_names = [c.name for c in p1.route]
     p2_names = [c.name for c in p2.route]
 
-    # Construimos el ciclo usando los nombres
+    # Construimos el ciclo usando los nombres. Este ciclo termina cuando pasas por un índice que ya completaste
+    #! Por qué es un número aleatorio? Según el crossover cícclico se arranca en la primera posición
     while index not in visited:
         visited.add(index)
         childRouteNames[index] = p1_names[index]  # copiamos la capital desde p1 (por nombre)
