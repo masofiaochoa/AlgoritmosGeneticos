@@ -62,9 +62,11 @@ elif ROUTING_METHOD == Routing_Method.SHORTEST_PATH_TO_ALL:
 # NO IMPLEMENTADO (placeholder)
 elif ROUTING_METHOD == Routing_Method.GENETIC_ALGORITHM:
     finalPopulation: list[CapitalRoute] = geneticAlgorithmRoute(CAPITALS)
-    
-    # Se muestran los cromosomas de la población final
-    # for i, cp in enumerate(finalPopulation):
-    #     print(f"Cromosoma:{i}\n\t{cp}\n")
+    route = finalPopulation[0]
 
-    plot_route_cartopy(finalPopulation[0])
+    print("Metodo de elección de ruta: Algoritmo Genético")
+    print("Ciudad de partida:", route.startCapital.name)
+    print("Recorrido completo:", " -> ".join(route.getCapitalNames()))
+    print(f"Longitud total del trayecto: {route.distance:.1f} km")
+
+plot_route_cartopy(route)
