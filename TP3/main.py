@@ -31,7 +31,6 @@ assert set(df.index) == set(df.columns), "Fila y columnas no coinciden"
 
 # CREAMOS LAS CAPITALES
 CAPITALS = {name: Capital(name, i) for i, name in enumerate(df.index)}
-print([capital.name for capital in CAPITALS.values()])
 
 # CARGAMOS LAS DISTANCIAS DE CADA CAPITAL A TODAS LAS DEMAS CAPITALES
 for origin in df.index:
@@ -39,12 +38,25 @@ for origin in df.index:
         if pd.notna(df.at[origin, dest]):
             CAPITALS[origin].distances[dest] = float(df.at[origin, dest])
 
-
-
 #PROGRAMA PRINCIPAL
+methodMenu = str(input("Ingrese el metodo de generacion de ruta:\nA - Desde cada ciudad ir a la ciudad más cercana no visitada. Con una ciudad de partida definida por el usuario\nB - Recorrido mínimo para visitar todas las capitales de las provincias de la República Argentina yendo siempre a la ciudad sin visitar más cercana\nC - Algoritmo Genético\n")).upper()
+ROUTING_METHOD: Routing_Method
+if methodMenu == "A":
+    ROUTING_METHOD = Routing_Method.NEAREST_TO_START_CAPITAL
+elif methodMenu == "B":
+    ROUTING_METHOD = Routing_Method.SHORTEST_PATH_TO_ALL
+elif methodMenu == "C":
+    ROUTING_METHOD = Routing_Method.GENETIC_ALGORITHM
 
 # INCISO A
 if ROUTING_METHOD == Routing_Method.NEAREST_TO_START_CAPITAL:
+    
+    print("Lista de capitales disponibles: ", [capital.name for capital in CAPITALS.values()])
+    startCapitalInput = input(f"Ingrese la capital de inicio (default: {START_CAPITAL}): ").upper()
+    if startCapitalInput in CAPITALS:
+        START_CAPITAL = startCapitalInput
+    elif startCapitalInput != "":
+        print(f"Capital inválida. Se usará la capital por defecto: {START_CAPITAL}")
     route = nearestNeighborRoute(START_CAPITAL, CAPITALS)
     print("Metodo de elección de ruta: “Desde cada ciudad ir a la ciudad más cercana no visitada. Con una ciudad de partida definida por el usuario")
     print("Ciudad de partida:", route.startCapital.name)

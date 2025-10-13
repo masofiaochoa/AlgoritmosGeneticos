@@ -4,9 +4,6 @@ from enum_method import *
 #PARAMETROS
 START_CAPITAL = Capital_Names.USHUAIA.value #IMPORTANTE EL .VALUE
 
-#METODO DE GENERACION DE RUTA
-ROUTING_METHOD = Routing_Method.GENETIC_ALGORITHM
-
 #VARIABLES ESPECIFICAS DE AG
 SELECTION_METHOD = AG_Method.TOURNAMENT
 #Determinan el porcentaje de la poblacion inicial que se genera utilizando el metodo de ir a la capital mas cercana primero
